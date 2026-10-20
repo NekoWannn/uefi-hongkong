@@ -14,7 +14,7 @@
 #
 ################################################################################
 [Defines]
-  PLATFORM_NAME                  = sheng
+  PLATFORM_NAME                  = hongkong
   PLATFORM_GUID                  = 3B213AC8-1D23-4B4E-9DEA-475CDBD974CA
   PLATFORM_VERSION               = 0.1
   DSC_SPECIFICATION              = 0x00010005

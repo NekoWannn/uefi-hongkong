@@ -67,8 +67,8 @@ APRIORI DXE {
   INF Binaries/sheng/QcomPkg/Drivers/FeatureEnablerDxe/FeatureEnablerDxe.inf
 !endif
 !if $(USE_CUSTOM_DISPLAY_DRIVER) == 1
-  INF shengPkg/Drivers/ShengGopLogDxe/ShengGopLogDxe.inf
-  INF shengPkg/Drivers/ShengDisplayDepexDxe/ShengDisplayDepexDxe.inf
+  INF hongkongPkg/Drivers/HongkongGopLogDxe/HongkongGopLogDxe.inf
+  INF hongkongPkg/Drivers/HongkongDisplayDepexDxe/HongkongDisplayDepexDxe.inf
   INF Binaries/sheng/QcomPkg/Drivers/DisplayDxe/DisplayDxe.inf
 !else
   INF SiliciumPkg/Drivers/SimpleFbDxe/SimpleFbDxe.inf

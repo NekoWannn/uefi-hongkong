@@ -43,7 +43,7 @@
 !endif
 
   INF MdeModulePkg/Universal/DevicePathDxe/DevicePathDxe.inf
-  INF shengPkg/Drivers/ShengBootMemoryDxe/ShengBootMemoryDxe.inf
+  INF hongkongPkg/Drivers/HongkongBootMemoryDxe/HongkongBootMemoryDxe.inf
   # The XNU loader is part of the firmware: a driver loaded from a volume is
   # refused by the image verification of this build.
   INF DarwinBootPkg/Driver/DarwinBoot.inf
@@ -75,7 +75,7 @@
   INF MdeModulePkg/Universal/PrintDxe/PrintDxe.inf
   INF MdeModulePkg/Universal/Console/ConPlatformDxe/ConPlatformDxe.inf
   INF MdeModulePkg/Universal/Console/ConSplitterDxe/ConSplitterDxe.inf
-  INF shengPkg/Drivers/ShengKeyInputDxe/ShengKeyInputDxe.inf
+  INF hongkongPkg/Drivers/HongkongKeyInputDxe/HongkongKeyInputDxe.inf
   INF MdeModulePkg/Universal/Console/GraphicsConsoleDxe/GraphicsConsoleDxe.inf
 
   # Headless until stock sheng framebuffer data is available.
@@ -91,8 +91,8 @@
   # stage left scanning out.
 !endif
 !if $(USE_CUSTOM_DISPLAY_DRIVER) == 1
-  INF shengPkg/Drivers/ShengGopLogDxe/ShengGopLogDxe.inf
-  INF shengPkg/Drivers/ShengDisplayDepexDxe/ShengDisplayDepexDxe.inf
+  INF hongkongPkg/Drivers/HongkongGopLogDxe/HongkongGopLogDxe.inf
+  INF hongkongPkg/Drivers/HongkongDisplayDepexDxe/HongkongDisplayDepexDxe.inf
   INF Binaries/sheng/QcomPkg/Drivers/DisplayDxe/DisplayDxe.inf
 !else
   INF SiliciumPkg/Drivers/SimpleFbDxe/SimpleFbDxe.inf
