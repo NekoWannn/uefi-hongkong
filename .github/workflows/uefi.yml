@@ -57,6 +57,8 @@ jobs:
           cp -r overlay/Platforms/Xiaomi/hongkongPkg up/Platforms/Xiaomi/
           cp -r overlay/Silicon/Qualcomm/MailiPkg up/Silicon/Qualcomm/
           cp overlay/Resources/Configs/hongkong.toml up/Resources/Configs/
+          mkdir -p up/Resources/DTBs
+          cp -v overlay/Resources/DTBs/*.dtb up/Resources/DTBs/
           ls up/Platforms/Xiaomi/hongkongPkg
           ls up/Silicon/Qualcomm/MailiPkg
 
