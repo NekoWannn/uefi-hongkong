@@ -54,8 +54,8 @@
   #
   # UEFI Stack
   #
-  gArmPlatformTokenSpaceGuid.PcdCPUCoresStackBase|0xA760D000
-  gArmPlatformTokenSpaceGuid.PcdCPUCorePrimaryStackSize|0x40000
+  gArmPlatformTokenSpaceGuid.PcdCPUCoresStackBase|0xC76C4000
+  gArmPlatformTokenSpaceGuid.PcdCPUCorePrimaryStackSize|0x30000
 
   #
   # SMBIOS
