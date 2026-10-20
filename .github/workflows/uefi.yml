@@ -10,13 +10,12 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
+  fd:
+    name: firmware volume
     runs-on: ubuntu-latest
     timeout-minutes: 90
-
     steps:
-      - name: Checkout our device overlay
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           path: overlay
 
@@ -24,27 +23,16 @@ jobs:
         run: |
           set -eux
           git clone --depth 1 -b sheng https://github.com/UniXNU/uefi-sheng.git up
-          # The umbrella carries the UEFI packages the .dsc names
-          # (UniXNUPkg, DarwinBootPkg, ...); they live in driver submodules and
-          # are installed into package/ by the umbrella's own tooling.
           git clone --recursive --depth 1 --shallow-submodules \
             https://github.com/UniXNU/UniXNU.git umbrella
-          ls umbrella
-          ls umbrella/drivers | head -30
           cd up
           git submodule update --init --depth 1 \
             Common/Mu Common/Mu_OEM_Sample Mu_Basecore Silicium-ACPI || true
-          # Binaries is a vendor-driver cache that is not distributed; the
-          # HONGKONG_VENDOR_HW=0 build references nothing under it, so keep an
-          # empty directory in place instead of failing submodule setup.
           mkdir -p Binaries
 
       - name: Expose the umbrella driver packages
         run: |
           set -eux
-          # Every driver repo ships its own <Name>Pkg directory; the platform
-          # .dsc resolves them through UNIXNU_ROOT/package, which only contains
-          # UniXNUPkg in the checkout.
           for d in umbrella/drivers/*/; do
             for p in "$d"*Pkg; do
               [ -d "$p" ] || continue
@@ -52,7 +40,6 @@ jobs:
               [ -e "umbrella/package/$name" ] || ln -s "../drivers/$(basename "$d")/$name" "umbrella/package/$name"
             done
           done
-          ls -l umbrella/package
           test -f umbrella/package/DarwinBootPkg/Driver/DarwinBoot.inf
 
       - name: Overlay the hongkong packages
@@ -63,8 +50,6 @@ jobs:
           cp overlay/Resources/Configs/hongkong.toml up/Resources/Configs/
           mkdir -p up/Resources/DTBs
           cp -v overlay/Resources/DTBs/*.dtb up/Resources/DTBs/
-          ls up/Platforms/Xiaomi/hongkongPkg
-          ls up/Silicon/Qualcomm/MailiPkg
 
       - name: Install build tools
         run: |
@@ -73,50 +58,29 @@ jobs:
           sudo apt-get install -y build-essential uuid-dev iasl nasm \
             gcc-aarch64-linux-gnu clang lld llvm mono-complete ca-certificates-mono \
             device-tree-compiler python3 python3-pip
-          # Ubuntu ships the LLVM tools with a version suffix; BootShim's
-          # Makefile calls the unversioned names, so provide them.
           for tool in llvm-objcopy llvm-objdump llvm-readelf; do
             if ! command -v "$tool" >/dev/null; then
               found="$(command -v "${tool}-18" || command -v "${tool}-17" || command -v "${tool}-19" || true)"
               test -n "$found"
               sudo ln -sf "$found" "/usr/local/bin/$tool"
             fi
-            command -v "$tool"
           done
           python3 -m pip install --upgrade pip
           python3 -m pip install -r up/pip-requirements.txt
           python3 -m pip install edk2-pytool-extensions edk2-pytool-library
 
-      - name: Use the instrumented BootShim
-        run: |
-          set -eux
-          # Paints framebuffer test blocks before jumping to the firmware, so a
-          # black screen can be attributed to the panel or to UEFI itself.
-          cp -v overlay/BootShim/BootShim.S up/BootShim/BootShim.S
-
       - name: Add the splash reservation to the appended DTB
         run: |
           set -eux
-          # ABL powers the panel down at handoff unless the appended DTB keeps
-          # the splash reservation, so patch it once dtc is available.
           python3 overlay/tools/add-splash.py up/Resources/DTBs/hongkong.dtb
-
-      - name: Show the build driver CLI
-        run: |
-          cd up
-          python3 Platforms/Xiaomi/hongkongPkg/DeviceBuild.py --help || true
 
       - name: Register hongkong as an active device
         run: |
           set -eux
           cd up
-          # build_uefi.py takes the device name and reads Resources/Configs/
-          # hongkong.toml for the FD window; Status.md only drives the
-          # "build every active device" script, so add an entry for the record.
           if ! grep -q 'hongkong' Status.md; then
             printf '\n**State:** Active\n**Codename:** hongkong\n**Models:** 1\n' >> Status.md
           fi
-          grep -A 2 'Codename:\*\* hongkong' Status.md
 
       - name: Build the hongkong firmware volume
         env:
@@ -124,26 +88,77 @@ jobs:
         run: |
           set -eux
           cd up
-          ls Resources/Configs/hongkong.toml
           ./build_uefi.py -d hongkong -r DEBUG || {
-            echo "--- build logs ---"
             find Build -name '*.log' -print -exec tail -n 100 {} \; 2>/dev/null || true
             exit 1
           }
 
-      - name: Report what was produced
+      - name: Collect the firmware volume
         run: |
           set -eux
           cd up
-          ls -l Mu-* 2>/dev/null || true
-          find Build -maxdepth 4 -type f \( -name '*.fd' -o -name '*.Fv' \) -printf '%p %s\n' 2>/dev/null || true
+          fd=$(find Build -name 'SILICIUM_UEFI.fd' | head -1)
+          test -n "$fd"
+          mkdir -p "${{ github.workspace }}/out"
+          cp -v "$fd" "${{ github.workspace }}/out/SILICIUM_UEFI.fd"
+          ls -l "${{ github.workspace }}/out"
 
-      - name: Upload firmware volume and boot image
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
+        with:
+          name: hongkong-fd
+          path: out/SILICIUM_UEFI.fd
+          if-no-files-found: error
+          retention-days: 30
+
+  image:
+    name: boot image
+    needs: fd
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Take the firmware volume from the previous job
+        uses: actions/download-artifact@v4
+        with:
+          name: hongkong-fd
+          path: shim
+
+      - name: Install toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-aarch64-linux-gnu nodejs
+
+      - name: Build the shim
+        run: |
+          set -eux
+          cd shim
+          mkdir -p out
+          CC=aarch64-linux-gnu-gcc
+          FLAGS="-O2 -ffreestanding -nostdlib -fno-pic -mgeneral-regs-only -mstrict-align -fno-stack-protector -Wall -Wextra"
+          for f in start.S uefi.c console.c stubs.c extra.c; do
+            $CC $FLAGS -c $f -o out/${f%.*}.o
+          done
+          $CC $FLAGS -static -T shim.ld -Wl,--build-id=none \
+            -Wl,--no-warn-rwx-segments -Wl,-N \
+            out/start.o out/uefi.o out/console.o out/stubs.o out/extra.o -o out/shim.elf
+          aarch64-linux-gnu-objcopy -O binary out/shim.elf out/shim.bin
+          size=$(aarch64-linux-gnu-nm out/shim.elf | awk '$3=="_end"{print strtonum("0x"$1)}')
+          truncate -s "$size" out/shim.bin
+          ls -l out/shim.bin SILICIUM_UEFI.fd
+
+      - name: Assemble the image
+        run: |
+          set -eux
+          cd shim
+          python3 mkimg.py
+          ls -l out/*.img
+
+      - uses: actions/upload-artifact@v4
         with:
           name: hongkong-uefi
           path: |
-            up/Mu-*
-            up/Build/hongkongPkg/**/*.fd
-          if-no-files-found: warn
+            shim/out/*.img
+            shim/out/shim.bin
+          if-no-files-found: error
           retention-days: 30
