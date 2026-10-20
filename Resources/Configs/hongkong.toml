@@ -1,0 +1,28 @@
+#
+# Boot Shim Configs
+#
+[boot_shim]
+requires_kernel_header = true
+
+#
+# UEFI FD Configs
+#
+# The stock uefi_a image is an ELF64 whose PT_LOAD sits at 0xc6800000 with
+# filesz 0x369000, so that is the window ABL hands the firmware.
+#
+[uefi_fd]
+base = 0xC6800000
+size = 0x369000
+
+#
+# Android Boot Image Kernel Configs
+#
+[boot_image_kernel]
+kernel_compression = "gzip"
+append_dtb         = true
+
+#
+# Android Boot Image Configs
+#
+[boot_image]
+header_version = 4
