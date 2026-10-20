@@ -101,12 +101,17 @@ jobs:
           test -n "$fd"
           mkdir -p "${{ github.workspace }}/out"
           cp -v "$fd" "${{ github.workspace }}/out/SILICIUM_UEFI.fd"
+          bs=$(find . -name BootShim.bin | head -1)
+          test -n "$bs"
+          cp -v "$bs" "${{ github.workspace }}/out/BootShim.bin"
           ls -l "${{ github.workspace }}/out"
 
       - uses: actions/upload-artifact@v4
         with:
           name: hongkong-fd
-          path: out/SILICIUM_UEFI.fd
+          path: |
+            out/SILICIUM_UEFI.fd
+            out/BootShim.bin
           if-no-files-found: error
           retention-days: 30
 
@@ -134,6 +139,7 @@ jobs:
           set -eux
           cd shim
           mkdir -p out
+          ls -l BootShim.bin SILICIUM_UEFI.fd
           CC=aarch64-linux-gnu-gcc
           FLAGS="-O2 -ffreestanding -nostdlib -fno-pic -mgeneral-regs-only -mstrict-align -fno-stack-protector -Wall -Wextra"
           for f in start.S uefi.c console.c stubs.c extra.c; do
@@ -151,7 +157,7 @@ jobs:
         run: |
           set -eux
           cd shim
-          python3 mkimg.py
+          python3 mkimg_bootshim.py
           ls -l out/*.img
 
       - uses: actions/upload-artifact@v4
