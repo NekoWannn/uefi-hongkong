@@ -20,8 +20,13 @@ jobs:
         run: |
           set -eux
           git clone --depth 1 -b sheng https://github.com/UniXNU/uefi-sheng.git up
-          git clone --depth 1 https://github.com/UniXNU/UniXNU.git umbrella
-          # Silicium/EDK2 submodules the platform packages resolve against.
+          # The umbrella carries the UEFI packages the .dsc names
+          # (UniXNUPkg, DarwinBootPkg, ...); they live in driver submodules and
+          # are installed into package/ by the umbrella's own tooling.
+          git clone --recursive --depth 1 --shallow-submodules \
+            https://github.com/UniXNU/UniXNU.git umbrella
+          ls umbrella
+          ls umbrella/drivers | head -30
           cd up
           git submodule update --init --depth 1 \
             Common/Mu Common/Mu_OEM_Sample Mu_Basecore Silicium-ACPI || true
@@ -29,6 +34,22 @@ jobs:
           # HONGKONG_VENDOR_HW=0 build references nothing under it, so keep an
           # empty directory in place instead of failing submodule setup.
           mkdir -p Binaries
+
+      - name: Expose the umbrella driver packages
+        run: |
+          set -eux
+          # Every driver repo ships its own <Name>Pkg directory; the platform
+          # .dsc resolves them through UNIXNU_ROOT/package, which only contains
+          # UniXNUPkg in the checkout.
+          for d in umbrella/drivers/*/; do
+            for p in "$d"*Pkg; do
+              [ -d "$p" ] || continue
+              name=$(basename "$p")
+              [ -e "umbrella/package/$name" ] || ln -s "../drivers/$(basename "$d")/$name" "umbrella/package/$name"
+            done
+          done
+          ls -l umbrella/package
+          test -f umbrella/package/DarwinBootPkg/Driver/DarwinBoot.inf
 
       - name: Overlay the hongkong packages
         run: |
