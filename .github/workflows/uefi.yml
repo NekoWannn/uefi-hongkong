@@ -53,46 +53,44 @@ jobs:
           cd up
           python3 Platforms/Xiaomi/hongkongPkg/DeviceBuild.py --help || true
 
-      - name: Build the hongkong firmware volume
-        env:
-          UNIXNU_ROOT: ${{ github.workspace }}/umbrella
-          FD_BASE: "0xC6800000"
-          FD_SIZE: "0x369000"
-          FD_BLOCKS: "0x369"
-          DEVICE_MODEL: "hongkong"
-          ENABLE_SECUREBOOT: "FALSE"
+      - name: Register hongkong as an active device
         run: |
           set -eux
           cd up
-          # stuart resolves the platform relative to the workspace root, while
-          # hongkongPkg lives under Platforms/Xiaomi. DeviceBuild.py expects the
-          # packages it names to be reachable through PACKAGES_PATH, so export
-          # the same list here instead of relying on the .dsc being at the root.
-          export WORKSPACE="$PWD"
-          export PACKAGES_PATH="$PWD/Platforms/Xiaomi:$PWD/Silicon/Qualcomm:$PWD/Common/Mu:$PWD/Common/Mu_OEM_Sample:$PWD/Mu_Basecore:$PWD/Silicon/Silicium:$PWD/Silicium-ACPI:$PWD/Silicium-ACPI/Platforms/Xiaomi:$PWD/Silicium-ACPI/Silicon/Qualcomm:$UNIXNU_ROOT/package"
-          # The DSC_SPECIFICATION path in the .dsc names hongkongPkg/hongkong.fdf;
-          # make that resolve too.
-          test -f hongkongPkg/hongkong.dsc || ln -sfn "Platforms/Xiaomi/hongkongPkg" hongkongPkg
-          ls -l hongkongPkg
-          python3 Platforms/Xiaomi/hongkongPkg/DeviceBuild.py \
-            --target DEBUG --arch AARCH64 --platform hongkongPkg/hongkong.dsc || {
-              echo "--- build log tail ---"
-              find Build -name '*.log' -print -exec tail -n 80 {} \; 2>/dev/null || true
-              exit 1
-            }
+          # build_uefi.py takes the device name and reads Resources/Configs/
+          # hongkong.toml for the FD window; Status.md only drives the
+          # "build every active device" script, so add an entry for the record.
+          if ! grep -q 'hongkong' Status.md; then
+            printf '\n**State:** Active\n**Codename:** hongkong\n**Models:** 1\n' >> Status.md
+          fi
+          grep -A 2 'Codename:\*\* hongkong' Status.md
+
+      - name: Build the hongkong firmware volume
+        env:
+          UNIXNU_ROOT: ${{ github.workspace }}/umbrella
+        run: |
+          set -eux
+          cd up
+          ls Resources/Configs/hongkong.toml
+          ./build_uefi.py -d hongkong -r DEBUG || {
+            echo "--- build logs ---"
+            find Build -name '*.log' -print -exec tail -n 100 {} \; 2>/dev/null || true
+            exit 1
+          }
 
       - name: Report what was produced
         run: |
           set -eux
           cd up
-          find Build -maxdepth 4 -type f \( -name '*.fd' -o -name '*.Fv' -o -name 'FD' \) -printf '%p %s\n' || true
+          ls -l Mu-* 2>/dev/null || true
+          find Build -maxdepth 4 -type f \( -name '*.fd' -o -name '*.Fv' \) -printf '%p %s\n' 2>/dev/null || true
 
-      - name: Upload firmware volume
+      - name: Upload firmware volume and boot image
         uses: actions/upload-artifact@v4
         with:
-          name: hongkong-uefi-fd
+          name: hongkong-uefi
           path: |
+            up/Mu-*
             up/Build/hongkongPkg/**/*.fd
-            up/Build/hongkongPkg/**/FD
           if-no-files-found: warn
           retention-days: 30
