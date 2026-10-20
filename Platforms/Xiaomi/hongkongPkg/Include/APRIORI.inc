@@ -3,7 +3,7 @@ APRIORI DXE {
   INF MdeModulePkg/Universal/PCD/Dxe/Pcd.inf
 
 !if $(HONGKONG_VENDOR_HW) == 1
-  INF Binaries/sheng/QcomPkg/Drivers/EnvDxe/EnvDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/EnvDxe/EnvDxe.inf
 !endif
 
   INF MdeModulePkg/Universal/ReportStatusCodeRouter/RuntimeDxe/ReportStatusCodeRouterRuntimeDxe.inf
@@ -15,34 +15,34 @@ APRIORI DXE {
   INF ArmPkg/Drivers/TimerDxe/TimerDxe.inf
 
 !if $(HONGKONG_VENDOR_HW) == 1
-  INF Binaries/sheng/QcomPkg/Drivers/SmemDxe/SmemDxe.inf
-  INF Binaries/sheng/QcomPkg/Drivers/DALSYSDxe/DALSYSDxe.inf
-  INF Binaries/sheng/QcomPkg/Drivers/HWIODxe/HWIODxe.inf
-  INF Binaries/sheng/QcomPkg/Drivers/ChipInfoDxe/ChipInfoDxe.inf
-  INF Binaries/sheng/QcomPkg/Drivers/PlatformInfoDxe/PlatformInfoDxe.inf
-  INF Binaries/sheng/QcomPkg/Drivers/ProjectInfoDxe/ProjectInfoDxe.inf
-  INF Binaries/sheng/QcomPkg/Drivers/HALIOMMUDxe/HALIOMMUDxe.inf
-  INF Binaries/sheng/QcomPkg/Drivers/ULogDxe/ULogDxe.inf
-  INF Binaries/sheng/QcomPkg/Drivers/IPCCDxe/IPCCDxe.inf
-  INF Binaries/sheng/QcomPkg/Drivers/GLinkDxe/GLinkDxe.inf
-  INF Binaries/sheng/QcomPkg/Drivers/CmdDbDxe/CmdDbDxe.inf
-  INF Binaries/sheng/QcomPkg/Drivers/PwrUtilsDxe/PwrUtilsDxe.inf
-  INF Binaries/sheng/QcomPkg/Drivers/NpaDxe/NpaDxe.inf
-  INF Binaries/sheng/QcomPkg/Drivers/RpmhDxe/RpmhDxe.inf
-  INF Binaries/sheng/QcomPkg/Drivers/VcsDxe/VcsDxe.inf
-  INF Binaries/sheng/QcomPkg/Drivers/ClockDxe/ClockDxe.inf
-  INF Binaries/sheng/QcomPkg/Drivers/ICBDxe/ICBDxe.inf
-  INF Binaries/sheng/QcomPkg/Drivers/ShmBridgeDxe/ShmBridgeDxeLA.inf
-  INF Binaries/sheng/QcomPkg/Drivers/TzDxe/ScmDxeCompat.inf
-  INF Binaries/sheng/QcomPkg/Drivers/TLMMDxe/TLMMDxe.inf
-  INF Binaries/sheng/QcomPkg/Drivers/I2CDxe/I2CDxe.inf
-  INF Binaries/sheng/QcomPkg/Drivers/SPMIDxe/SPMIDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/SmemDxe/SmemDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/DALSYSDxe/DALSYSDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/HWIODxe/HWIODxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/ChipInfoDxe/ChipInfoDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/PlatformInfoDxe/PlatformInfoDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/ProjectInfoDxe/ProjectInfoDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/HALIOMMUDxe/HALIOMMUDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/ULogDxe/ULogDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/IPCCDxe/IPCCDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/GLinkDxe/GLinkDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/CmdDbDxe/CmdDbDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/PwrUtilsDxe/PwrUtilsDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/NpaDxe/NpaDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/RpmhDxe/RpmhDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/VcsDxe/VcsDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/ClockDxe/ClockDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/ICBDxe/ICBDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/ShmBridgeDxe/ShmBridgeDxeLA.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/TzDxe/ScmDxeCompat.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/TLMMDxe/TLMMDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/I2CDxe/I2CDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/SPMIDxe/SPMIDxe.inf
 !endif
 
   INF MdeModulePkg/Universal/ResetSystemRuntimeDxe/ResetSystemRuntimeDxe.inf
 
 !if $(HONGKONG_VENDOR_HW) == 1
-  INF Binaries/sheng/QcomPkg/Drivers/PmicDxe/PmicDxeLa.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/PmicDxe/PmicDxeLa.inf
 !endif
 
   INF MdeModulePkg/Universal/Disk/DiskIoDxe/DiskIoDxe.inf
@@ -50,33 +50,33 @@ APRIORI DXE {
   INF MdeModulePkg/Universal/Disk/UnicodeCollation/EnglishDxe/EnglishDxe.inf
 
 !if $(HONGKONG_VENDOR_HW) == 1
-  INF Binaries/sheng/QcomPkg/Drivers/SdccDxe/SdccDxe.inf
-  INF Binaries/sheng/QcomPkg/Drivers/UFSDxe/UFSDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/SdccDxe/SdccDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/UFSDxe/UFSDxe.inf
 !endif
 
   INF FatPkg/EnhancedFatDxe/Fat.inf
 
 !if $(HONGKONG_VENDOR_HW) == 1
-  INF Binaries/sheng/QcomPkg/Drivers/TzDxe/TzDxeLA.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/TzDxe/TzDxeLA.inf
 !endif
 
   INF MdeModulePkg/Universal/Variable/RuntimeDxe/VariableRuntimeDxe.inf
 
 !if $(HONGKONG_VENDOR_HW) == 1
-  INF Binaries/sheng/QcomPkg/Drivers/DDRInfoDxe/DDRInfoDxe.inf
-  INF Binaries/sheng/QcomPkg/Drivers/FeatureEnablerDxe/FeatureEnablerDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/DDRInfoDxe/DDRInfoDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/FeatureEnablerDxe/FeatureEnablerDxe.inf
 !endif
 !if $(USE_CUSTOM_DISPLAY_DRIVER) == 1
   INF hongkongPkg/Drivers/HongkongGopLogDxe/HongkongGopLogDxe.inf
   INF hongkongPkg/Drivers/HongkongDisplayDepexDxe/HongkongDisplayDepexDxe.inf
-  INF Binaries/sheng/QcomPkg/Drivers/DisplayDxe/DisplayDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/DisplayDxe/DisplayDxe.inf
 !else
   INF SiliciumPkg/Drivers/SimpleFbDxe/SimpleFbDxe.inf
 !endif
 !if $(HONGKONG_VENDOR_HW) == 1
-  INF Binaries/sheng/QcomPkg/Drivers/PILProxyDxe/PILProxyDxe.inf
-  INF Binaries/sheng/QcomPkg/Drivers/PILDxe/PILDxe.inf
-  INF Binaries/sheng/QcomPkg/Drivers/SPSSDxe/SPSSDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/PILProxyDxe/PILProxyDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/PILDxe/PILDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/SPSSDxe/SPSSDxe.inf
 !endif
 
   INF MdeModulePkg/Universal/WatchdogTimerDxe/WatchdogTimer.inf
@@ -84,20 +84,20 @@ APRIORI DXE {
   INF EmbeddedPkg/EmbeddedMonotonicCounter/EmbeddedMonotonicCounter.inf
   INF EmbeddedPkg/RealTimeClockRuntimeDxe/RealTimeClockRuntimeDxe.inf
   INF MdeModulePkg/Universal/PrintDxe/PrintDxe.inf
-  INF Binaries/sheng/MdeModulePkg/Universal/DevicePathDxe/DevicePathDxe.inf
+  INF Binaries/hongkong/MdeModulePkg/Universal/DevicePathDxe/DevicePathDxe.inf
   INF MdeModulePkg/Universal/CapsuleRuntimeDxe/CapsuleRuntimeDxe.inf
   INF MdeModulePkg/Universal/HiiDatabaseDxe/HiiDatabaseDxe.inf
   INF MdeModulePkg/Universal/BdsDxe/BdsDxe.inf
 
 !if $(HONGKONG_VENDOR_HW) == 1
-  INF Binaries/sheng/QcomPkg/Drivers/SPIDxe/SPIDxe.inf
-  INF Binaries/sheng/QcomPkg/Drivers/PmicGlinkDxe/PmicGlinkDxe.inf
-  INF Binaries/sheng/QcomPkg/Drivers/UsbPwrCtrlDxe/UsbPwrCtrlDxe.inf
-  INF Binaries/sheng/QcomPkg/Drivers/QcomChargerDxe/QcomChargerDxeLA.inf
-  INF Binaries/sheng/QcomPkg/Drivers/ChargerExDxe/ChargerExDxe.inf
-  INF Binaries/sheng/QcomPkg/Drivers/UsbfnDwc3Dxe/UsbfnDwc3Dxe.inf
-  INF Binaries/sheng/QcomPkg/Drivers/XhciPciEmulationDxe/XhciPciEmulationDxe.inf
-  INF Binaries/sheng/QcomPkg/Drivers/XhciDxe/XhciDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/SPIDxe/SPIDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/PmicGlinkDxe/PmicGlinkDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/UsbPwrCtrlDxe/UsbPwrCtrlDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/QcomChargerDxe/QcomChargerDxeLA.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/ChargerExDxe/ChargerExDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/UsbfnDwc3Dxe/UsbfnDwc3Dxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/XhciPciEmulationDxe/XhciPciEmulationDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/XhciDxe/XhciDxe.inf
 !endif
 
   INF MdeModulePkg/Bus/Usb/UsbBusDxe/UsbBusDxe.inf
@@ -105,19 +105,19 @@ APRIORI DXE {
   INF MdeModulePkg/Bus/Usb/UsbMassStorageDxe/UsbMassStorageDxe.inf
 
 !if $(HONGKONG_VENDOR_HW) == 1
-  INF Binaries/sheng/QcomPkg/Drivers/UsbMsdDxe/UsbMsdDxe.inf
-  INF Binaries/sheng/QcomPkg/Drivers/UsbDeviceDxe/UsbDeviceDxe.inf
-  INF Binaries/sheng/QcomPkg/Drivers/UsbConfigDxe/UsbConfigDxe.inf
-  INF Binaries/sheng/QcomPkg/Drivers/ButtonsDxe/ButtonsDxe.inf
-  INF Binaries/sheng/QcomPkg/Drivers/TsensDxe/TsensDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/UsbMsdDxe/UsbMsdDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/UsbDeviceDxe/UsbDeviceDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/UsbConfigDxe/UsbConfigDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/ButtonsDxe/ButtonsDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/TsensDxe/TsensDxe.inf
 
   # Headless until stock sheng framebuffer data is available.
 
-  INF Binaries/sheng/QcomPkg/Drivers/LimitsDxe/LimitsDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/LimitsDxe/LimitsDxe.inf
   # Headless until stock sheng framebuffer data is available.
-  INF Binaries/sheng/QcomPkg/Drivers/GpiDxe/GpiDxe.inf
-  INF Binaries/sheng/QcomPkg/Drivers/UCDxe/UCDxe.inf
-  INF Binaries/sheng/QcomPkg/Drivers/RNGDxe/RngDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/GpiDxe/GpiDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/UCDxe/UCDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/RNGDxe/RngDxe.inf
 !endif
 
   INF EmbeddedPkg/SimpleTextInOutSerial/SimpleTextInOutSerial.inf
@@ -126,6 +126,6 @@ APRIORI DXE {
   INF MdeModulePkg/Universal/Console/GraphicsConsoleDxe/GraphicsConsoleDxe.inf
 
 !if $(HONGKONG_VENDOR_HW) == 1
-  INF Binaries/sheng/QcomPkg/Drivers/RscDxe/RscDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/RscDxe/RscDxe.inf
 !endif
 }
