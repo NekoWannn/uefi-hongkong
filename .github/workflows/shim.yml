@@ -29,11 +29,11 @@ jobs:
           mkdir -p out
           CC=aarch64-linux-gnu-gcc
           FLAGS="-O2 -ffreestanding -nostdlib -fno-pic -mgeneral-regs-only -mstrict-align -fno-stack-protector -Wall -Wextra"
-          for f in start.S uefi.c console.c; do
+          for f in start.S uefi.c console.c stubs.c extra.c; do
             $CC $FLAGS -c $f -o out/${f%.*}.o
           done
           $CC $FLAGS -static -T shim.ld -Wl,--build-id=none \
-            -Wl,--no-warn-rwx-segments -Wl,-N out/start.o out/uefi.o out/console.o \
+            -Wl,--no-warn-rwx-segments -Wl,-N out/start.o out/uefi.o out/console.o out/stubs.o out/extra.o \
             -o out/shim.elf
           aarch64-linux-gnu-objcopy -O binary out/shim.elf out/shim.bin
           size=$(aarch64-linux-gnu-nm out/shim.elf | awk '$3=="_end"{print strtonum("0x"$1)}')

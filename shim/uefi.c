@@ -11,9 +11,6 @@
 
 #define FD_BASE   0xC6800000UL
 #define FD_SIZE   0x369000UL
-#define FB_BASE   0xF8C60000UL
-#define FB_STRIDE 4480UL
-#define FB_H      2436UL
 
 extern char _Payload[];
 
@@ -47,7 +44,7 @@ shim_main(uint64_t x0, uint64_t x1, uint64_t x2, uint64_t x3)
 {
 	(void)x0; (void)x1; (void)x2; (void)x3;
 
-	con_init();
+	con_clear(0x00000000u);
 	con_hex2("FB", "base=", FB_BASE, "stride=", FB_STRIDE);
 	con_hex2("PAYLOAD", "src=", (uintptr_t)_Payload, "dst=", FD_BASE);
 	con_hex2("FD", "size=", FD_SIZE, "h=", FB_H);
