@@ -56,8 +56,18 @@ shim_main(uint64_t x0, uint64_t x1, uint64_t x2, uint64_t x3)
 
 	copy_to_fd_base();
 	con_str("COPY", "done, jumping to FD_BASE");
+	con_hex2("ARGS", "x0=fv=", FD_BASE, "x1=size=", FD_SIZE);
 
-	__asm__ volatile("dsb sy; ic iallu; dsb sy; isb" ::: "memory");
-	((void (*)(void))FD_BASE)();
+	/* Hand SEC the firmware volume the way a reset vector would see it: some
+	 * SEC implementations take the FV address and size as arguments instead of
+	 * relying on fixed PCDs alone. */
+	__asm__ volatile(
+		"dsb sy; ic iallu; dsb sy; isb\n"
+		"mov x0, %0\n"
+		"mov x1, %1\n"
+		"br  %2\n"
+		:
+		: "r"((uint64_t)FD_BASE), "r"((uint64_t)FD_SIZE), "r"((uint64_t)FD_BASE)
+		: "memory");
 	return 0;
 }
