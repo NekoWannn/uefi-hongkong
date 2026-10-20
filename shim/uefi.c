@@ -58,7 +58,7 @@ shim_main(uint64_t x0, uint64_t x1, uint64_t x2, uint64_t x3)
 	con_str("SHIM", "bands drawn: red 300-420, green 460-580");
 
 	copy_to_fd_base();
-	con_hex("COPY", "done, jumping to FD_BASE");
+	con_str("COPY", "done, jumping to FD_BASE");
 
 	__asm__ volatile("dsb sy; ic iallu; dsb sy; isb" ::: "memory");
 	((void (*)(void))FD_BASE)();
