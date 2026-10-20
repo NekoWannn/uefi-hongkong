@@ -44,7 +44,8 @@ jobs:
           set -eux
           sudo apt-get update
           sudo apt-get install -y build-essential uuid-dev iasl nasm \
-            gcc-aarch64-linux-gnu clang lld llvm python3 python3-pip
+            gcc-aarch64-linux-gnu clang lld llvm mono-complete ca-certificates-mono \
+            python3 python3-pip
           # Ubuntu ships the LLVM tools with a version suffix; BootShim's
           # Makefile calls the unversioned names, so provide them.
           for tool in llvm-objcopy llvm-objdump llvm-readelf; do
