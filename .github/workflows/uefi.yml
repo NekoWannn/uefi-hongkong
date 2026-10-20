@@ -64,6 +64,16 @@ jobs:
         run: |
           set -eux
           cd up
+          # stuart resolves the platform relative to the workspace root, while
+          # hongkongPkg lives under Platforms/Xiaomi. DeviceBuild.py expects the
+          # packages it names to be reachable through PACKAGES_PATH, so export
+          # the same list here instead of relying on the .dsc being at the root.
+          export WORKSPACE="$PWD"
+          export PACKAGES_PATH="$PWD/Platforms/Xiaomi:$PWD/Silicon/Qualcomm:$PWD/Common/Mu:$PWD/Common/Mu_OEM_Sample:$PWD/Mu_Basecore:$PWD/Silicon/Silicium:$PWD/Silicium-ACPI:$PWD/Silicium-ACPI/Platforms/Xiaomi:$PWD/Silicium-ACPI/Silicon/Qualcomm:$UNIXNU_ROOT/package"
+          # The DSC_SPECIFICATION path in the .dsc names hongkongPkg/hongkong.fdf;
+          # make that resolve too.
+          test -f hongkongPkg/hongkong.dsc || ln -sfn "Platforms/Xiaomi/hongkongPkg" hongkongPkg
+          ls -l hongkongPkg
           python3 Platforms/Xiaomi/hongkongPkg/DeviceBuild.py \
             --target DEBUG --arch AARCH64 --platform hongkongPkg/hongkong.dsc || {
               echo "--- build log tail ---"
