@@ -59,9 +59,6 @@ jobs:
           cp overlay/Resources/Configs/hongkong.toml up/Resources/Configs/
           mkdir -p up/Resources/DTBs
           cp -v overlay/Resources/DTBs/*.dtb up/Resources/DTBs/
-          # ABL powers the panel down at handoff unless the appended DTB still
-          # carries the splash reservation.
-          python3 overlay/tools/add-splash.py up/Resources/DTBs/hongkong.dtb
           ls up/Platforms/Xiaomi/hongkongPkg
           ls up/Silicon/Qualcomm/MailiPkg
 
@@ -85,6 +82,13 @@ jobs:
           python3 -m pip install --upgrade pip
           python3 -m pip install -r up/pip-requirements.txt
           python3 -m pip install edk2-pytool-extensions edk2-pytool-library
+
+      - name: Add the splash reservation to the appended DTB
+        run: |
+          set -eux
+          # ABL powers the panel down at handoff unless the appended DTB keeps
+          # the splash reservation, so patch it once dtc is available.
+          python3 overlay/tools/add-splash.py up/Resources/DTBs/hongkong.dtb
 
       - name: Show the build driver CLI
         run: |
