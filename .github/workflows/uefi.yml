@@ -1,0 +1,83 @@
+name: uefi
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - name: Checkout our device overlay
+        uses: actions/checkout@v4
+        with:
+          path: overlay
+
+      - name: Fetch upstream uefi-sheng and the UniXNU umbrella
+        run: |
+          set -eux
+          git clone --depth 1 -b sheng https://github.com/UniXNU/uefi-sheng.git up
+          git clone --depth 1 https://github.com/UniXNU/UniXNU.git umbrella
+          # Silicium/EDK2 submodules the platform packages resolve against.
+          cd up
+          git submodule update --init --depth 1 \
+            Common/Mu Common/Mu_OEM_Sample Mu_Basecore Silicium-ACPI || true
+          # Binaries is a vendor-driver cache that is not distributed; the
+          # HONGKONG_VENDOR_HW=0 build references nothing under it, so keep an
+          # empty directory in place instead of failing submodule setup.
+          mkdir -p Binaries
+
+      - name: Overlay the hongkong packages
+        run: |
+          set -eux
+          cp -r overlay/Platforms/Xiaomi/hongkongPkg up/Platforms/Xiaomi/
+          cp -r overlay/Silicon/Qualcomm/MailiPkg up/Silicon/Qualcomm/
+          cp overlay/Resources/Configs/hongkong.toml up/Resources/Configs/
+          ls up/Platforms/Xiaomi/hongkongPkg
+          ls up/Silicon/Qualcomm/MailiPkg
+
+      - name: Install build tools
+        run: |
+          set -eux
+          sudo apt-get update
+          sudo apt-get install -y build-essential uuid-dev iasl nasm gcc-aarch64-linux-gnu python3 python3-pip
+          python3 -m pip install --upgrade pip
+          python3 -m pip install -r up/pip-requirements.txt
+          python3 -m pip install edk2-pytool-extensions edk2-pytool-library
+
+      - name: Build the hongkong firmware volume
+        env:
+          UNIXNU_ROOT: ${{ github.workspace }}/umbrella
+          FD_BASE: "0xC6800000"
+          FD_SIZE: "0x369000"
+          FD_BLOCKS: "0x369"
+          DEVICE_MODEL: "hongkong"
+          ENABLE_SECUREBOOT: "FALSE"
+        run: |
+          set -eux
+          cd up
+          python3 Platforms/Xiaomi/hongkongPkg/DeviceBuild.py \
+            -t DEBUG -a AARCH64 -p hongkongPkg/hongkong.dsc || {
+              echo "--- build log tail ---"
+              find Build -name '*.log' -print -exec tail -n 80 {} \; 2>/dev/null || true
+              exit 1
+            }
+
+      - name: Report what was produced
+        run: |
+          set -eux
+          cd up
+          find Build -maxdepth 4 -type f \( -name '*.fd' -o -name '*.Fv' -o -name 'FD' \) -printf '%p %s\n' || true
+
+      - name: Upload firmware volume
+        uses: actions/upload-artifact@v4
+        with:
+          name: hongkong-uefi-fd
+          path: |
+            up/Build/hongkongPkg/**/*.fd
+            up/Build/hongkongPkg/**/FD
+          if-no-files-found: warn
+          retention-days: 30
