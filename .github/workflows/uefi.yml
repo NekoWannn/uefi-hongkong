@@ -48,6 +48,11 @@ jobs:
           python3 -m pip install -r up/pip-requirements.txt
           python3 -m pip install edk2-pytool-extensions edk2-pytool-library
 
+      - name: Show the build driver CLI
+        run: |
+          cd up
+          python3 Platforms/Xiaomi/hongkongPkg/DeviceBuild.py --help || true
+
       - name: Build the hongkong firmware volume
         env:
           UNIXNU_ROOT: ${{ github.workspace }}/umbrella
@@ -60,7 +65,7 @@ jobs:
           set -eux
           cd up
           python3 Platforms/Xiaomi/hongkongPkg/DeviceBuild.py \
-            -t DEBUG -a AARCH64 -p hongkongPkg/hongkong.dsc || {
+            --target DEBUG --arch AARCH64 --platform hongkongPkg/hongkong.dsc || {
               echo "--- build log tail ---"
               find Build -name '*.log' -print -exec tail -n 80 {} \; 2>/dev/null || true
               exit 1
