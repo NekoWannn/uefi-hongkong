@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
-// Generated from this device's DTBs (uefi_dtb_a): the platform memorymap plus
-// the labelled reservations in the device overlay's fragment@9. Every region
-// below is firmware-reserved; UEFI must not allocate inside any of them.
+// Regions come from this device's DTBs (uefi_dtb_a).
+// All are declared reserved; the attribute encoding is not yet decoded.
 #include <Library/MemoryMapLib.h>
 
 STATIC EFI_MEMORY_REGION_DESCRIPTOR gMemoryDescriptor[] = {
@@ -41,3 +40,13 @@ STATIC EFI_MEMORY_REGION_DESCRIPTOR gMemoryDescriptor[] = {
   {"region@d8800000", 0xD8800000, 0x075A0000, AddMem, MEM_RES, UNCACHEABLE, Reserv, UNCACHED_UNBUFFERED_XN},
   {"region@f8c60000", 0xF8C60000, 0x02B00000, AddMem, MEM_RES, UNCACHEABLE, Reserv, UNCACHED_UNBUFFERED_XN},
 };
+
+VOID
+GetMemoryMap (
+  OUT EFI_MEMORY_REGION_DESCRIPTOR **MemoryDescriptor,
+  OUT UINT8                         *MemoryDescriptorCount)
+{
+  // Pass Data
+  *MemoryDescriptor      = gMemoryDescriptor;
+  *MemoryDescriptorCount = ARRAY_SIZE (gMemoryDescriptor);
+}
