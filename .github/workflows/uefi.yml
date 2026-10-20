@@ -59,6 +59,9 @@ jobs:
           cp overlay/Resources/Configs/hongkong.toml up/Resources/Configs/
           mkdir -p up/Resources/DTBs
           cp -v overlay/Resources/DTBs/*.dtb up/Resources/DTBs/
+          # ABL powers the panel down at handoff unless the appended DTB still
+          # carries the splash reservation.
+          python3 overlay/tools/add-splash.py up/Resources/DTBs/hongkong.dtb
           ls up/Platforms/Xiaomi/hongkongPkg
           ls up/Silicon/Qualcomm/MailiPkg
 
@@ -68,7 +71,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y build-essential uuid-dev iasl nasm \
             gcc-aarch64-linux-gnu clang lld llvm mono-complete ca-certificates-mono \
-            python3 python3-pip
+            device-tree-compiler python3 python3-pip
           # Ubuntu ships the LLVM tools with a version suffix; BootShim's
           # Makefile calls the unversioned names, so provide them.
           for tool in llvm-objcopy llvm-objdump llvm-readelf; do
