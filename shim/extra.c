@@ -20,3 +20,8 @@ exc_handler(void *frame)
 		__asm__ volatile("wfi");
 	}
 }
+
+/* The firmware volume is appended at a fixed offset after the shim, so the
+ * symbol is an absolute address rather than a linked object. Must match
+ * PAYLOAD_OFF in mkimg.py. */
+__asm__(".globl _Payload\n.set _Payload, 0x2F000\n");
