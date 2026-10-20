@@ -55,19 +55,18 @@ shim_main(uint64_t x0, uint64_t x1, uint64_t x2, uint64_t x3)
 	con_str("SHIM", "bands drawn: red 300-420, green 460-580");
 
 	copy_to_fd_base();
-	con_str("COPY", "done, jumping to FD_BASE");
-	con_hex2("ARGS", "x0=fv=", FD_BASE, "x1=size=", FD_SIZE);
+	con_str("COPY", "done");
+	con_hex2("DTB", "x0=dtb=", (uint32_t)x0, "x1=fv=", FD_BASE);
 
-	/* Hand SEC the firmware volume the way a reset vector would see it: some
-	 * SEC implementations take the FV address and size as arguments instead of
-	 * relying on fixed PCDs alone. */
+	/* ABL hands us the device tree in x0, and the firmware's SEC/PEI consumes
+	 * it to build the memory HOBs. Pass it on instead of the FD address. */
 	__asm__ volatile(
 		"dsb sy; ic iallu; dsb sy; isb\n"
 		"mov x0, %0\n"
 		"mov x1, %1\n"
 		"br  %2\n"
 		:
-		: "r"((uint64_t)FD_BASE), "r"((uint64_t)FD_SIZE), "r"((uint64_t)FD_BASE)
+		: "r"((uint64_t)x0), "r"((uint64_t)FD_BASE), "r"((uint64_t)FD_BASE)
 		: "memory");
 	return 0;
 }
