@@ -83,6 +83,13 @@ jobs:
           python3 -m pip install -r up/pip-requirements.txt
           python3 -m pip install edk2-pytool-extensions edk2-pytool-library
 
+      - name: Use the instrumented BootShim
+        run: |
+          set -eux
+          # Paints framebuffer test blocks before jumping to the firmware, so a
+          # black screen can be attributed to the panel or to UEFI itself.
+          cp -v overlay/BootShim/BootShim.S up/BootShim/BootShim.S
+
       - name: Add the splash reservation to the appended DTB
         run: |
           set -eux
