@@ -33,28 +33,7 @@ static const unsigned char font8x16[95][16] = {
 static UINT32 mRow;
 static UINT32 mCol;
 
-STATIC
-VOID
-FbClearRow (
-  IN UINT32 Row
-  )
-{
-  UINT32 y;
-  UINT32 x;
-  UINT32 base;
-
-  if (Row * CELL_H + MARGIN_Y >= FB_HEIGHT) {
-    return;
-  }
-
-  base = MARGIN_Y + Row * CELL_H;
-  for (y = 0; y < CELL_H; y++) {
-    volatile UINT32 *line = FB_BASE + (base + y) * FB_STRIDE + MARGIN_X;
-    for (x = 0; x < 100 * CELL_W; x++) {
-      line[x] = BG;
-    }
-  }
-}
+/* Row clearing was removed: each cell paints its own background. */
 
 STATIC
 VOID
