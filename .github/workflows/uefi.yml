@@ -58,7 +58,10 @@ jobs:
           n=0
           for p in "$GITHUB_WORKSPACE"/overlay/patches/*.patch; do
             echo "applying $(basename "$p")"
-            git -C up apply --verbose "$p"
+            # patch rather than git apply: the upstream tree moves and a pure
+            # line-number shift is not a reason to fail. --forward keeps it from
+            # applying a patch twice.
+            patch -p1 -d up --forward --fuzz=3 < "$p"
             n=$((n + 1))
           done
           echo "applied $n patch(es)"
