@@ -26,8 +26,11 @@ jobs:
           git clone --recursive --depth 1 --shallow-submodules \
             https://github.com/UniXNU/UniXNU.git umbrella
           cd up
+          # No "|| true" here: a half-cloned submodule used to surface much later
+          # as "MdePkg.dec: File/directory not found in workspace", which points
+          # nowhere near the real cause.
           git submodule update --init --depth 1 \
-            Common/Mu Common/Mu_OEM_Sample Mu_Basecore Silicium-ACPI || true
+            Common/Mu Common/Mu_OEM_Sample Mu_Basecore Silicium-ACPI
           mkdir -p Binaries
 
       - name: Expose the umbrella driver packages
