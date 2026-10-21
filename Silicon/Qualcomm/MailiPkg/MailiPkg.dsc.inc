@@ -49,6 +49,15 @@
   #
   gArmTokenSpaceGuid.PcdGicDistributorBase|0x17000000
   gArmTokenSpaceGuid.PcdGicRedistributorsBase|0x17080000
+'
+  #
+  # Arch timer PPIs, read out of this device's ArmTimerDxe: 19 (secure),
+  # 23 (non-secure), 28 (virtual), 26 (hypervisor).
+  #
+  gArmTokenSpaceGuid.PcdArmArchTimerSecIntrNum|19
+  gArmTokenSpaceGuid.PcdArmArchTimerIntrNum|23
+  gArmTokenSpaceGuid.PcdArmArchTimerVirtIntrNum|28
+  gArmTokenSpaceGuid.PcdArmArchTimerHypIntrNum|26
 
   #
   # SMBIOS
