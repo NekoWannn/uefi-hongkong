@@ -30,8 +30,12 @@
 #define QUEUE_SIZE      16
 #define MAX_FAILURES    50     // consecutive failed samples before polling stops
 
-#define SPMI_CORE_BASE    0x0C400000UL
-#define SPMI_OBSRVR_BASE  0x0C440000UL
+/* From Common/DeviceTree/Core/PMIC/spmi_pmic_arb.dtsi, which Maili inherits:
+ * spmi-bus@c425000 covers 0x0C425000 for 0x500000 and carries the arbiter the
+ * PMIC keys are read through. The previous 0x0C400000 pair came from another
+ * SoC and is not decoded on this one. */
+#define SPMI_CORE_BASE    0x0C425000UL
+#define SPMI_OBSRVR_BASE  0x0C436000UL
 
 typedef struct {
   VENDOR_DEVICE_PATH          Vendor;
