@@ -73,6 +73,17 @@ shim_main(uint64_t x0, uint64_t x1, uint64_t x2, uint64_t x3)
 	copy_to_fd_base();
 	con_str("COPY", "volume copied");
 
+	/* Writes to FD_BASE may be dropped: the region can belong to TZ or be an
+	 * XPU-protected carveout. Read the pattern back before blaming fetch. */
+	{
+		volatile uint32_t *p = (volatile uint32_t *)FD_BASE;
+		p[0] = 0xDEADBEEFu;
+		p[0x40] = 0x12345678u;
+		__asm__ volatile("dsb sy" ::: "memory");
+		con_hex2("RAM", "w0=", 0xDEADBEEFu, "r0=", p[0]);
+		con_hex2("RAM", "w1=", 0x12345678u, "r1=", p[0x40]);
+	}
+
 	/* Control for the previous run: the same stub, executed where it was
 	 * linked. If the stripes appear here but not at FD_BASE, the stub is fine
 	 * and 0xC6800000 is what refuses to run code. */
