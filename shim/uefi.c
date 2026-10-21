@@ -54,19 +54,17 @@ shim_main(uint64_t x0, uint64_t x1, uint64_t x2, uint64_t x3)
 	fill_rect(460, 580, 0x0000FF00u);
 	con_str("SHIM", "bands drawn: red 300-420, green 460-580");
 
-	copy_to_fd_base();
-	con_str("COPY", "done");
-	con_hex2("DTB", "x0=dtb=", (uint32_t)x0, "x1=fv=", FD_BASE);
+	/* Execute the volume where ABL loaded it. The shim itself runs from this
+	 * region, so it is certainly fetchable; FD_BASE may not be. */
+	con_str("COPY", "skipped: running in place");
+	con_hex2("DTB", "x0=dtb=", (uint32_t)x0, "entry=", (uint32_t)(uintptr_t)_Payload);
 
-	/* ABL hands us the device tree in x0, and the firmware's SEC/PEI consumes
-	 * it to build the memory HOBs. Pass it on instead of the FD address. */
 	__asm__ volatile(
 		"dsb sy; ic iallu; dsb sy; isb\n"
 		"mov x0, %0\n"
-		"mov x1, %1\n"
-		"br  %2\n"
+		"br  %1\n"
 		:
-		: "r"((uint64_t)x0), "r"((uint64_t)FD_BASE), "r"((uint64_t)FD_BASE)
+		: "r"((uint64_t)x0), "r"((uint64_t)(uintptr_t)_Payload)
 		: "memory");
 	return 0;
 }
