@@ -50,11 +50,13 @@ jobs:
         run: |
           set -eux
           shopt -s nullglob
-          # Every patch under patches/ is applied in name order against the
-          # upstream tree; paths inside a patch are relative to that tree's root.
-          # Removing a change is then just deleting its file here.
+          # This repository is checked out under overlay/, not at the workspace
+          # root, so the patches live there. Every patch under it is applied in
+          # name order against the upstream tree; paths inside a patch are
+          # relative to that tree's root, which makes adding or dropping a change
+          # a matter of adding or deleting one file.
           n=0
-          for p in "$GITHUB_WORKSPACE"/patches/*.patch; do
+          for p in "$GITHUB_WORKSPACE"/overlay/patches/*.patch; do
             echo "applying $(basename "$p")"
             git -C up apply --verbose "$p"
             n=$((n + 1))
