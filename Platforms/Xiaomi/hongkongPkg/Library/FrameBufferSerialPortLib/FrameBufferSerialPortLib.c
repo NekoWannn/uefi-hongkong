@@ -202,10 +202,17 @@ SerialPortInitialize (
    * exactly like a firmware that died, which made the last runs ambiguous. */
   (void)y;
   (void)x;
+  /* The lock lives in uninitialised memory at a fixed address. If it held a
+   * non-zero value the first DEBUG would spin forever and the firmware would
+   * print nothing at all, which is exactly what a stuck shim screen looks
+   * like. Clear it before anything can take it. */
+  CON_SHARED->Lock = 0;
+  __asm__ volatile("dsb sy" ::: "memory");
   mRow = 0;
   mCol = 0;
   mLineNo = 1;
   mPendingPrefix = TRUE;
+  mBeat = 0;
   CON_SHARED->Magic = CON_MAGIC;
   return RETURN_SUCCESS;
 }
