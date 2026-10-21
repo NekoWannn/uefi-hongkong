@@ -115,7 +115,7 @@ APRIORI DXE {
   # The carried-over USB modules declare no DEPEX, so this list is what orders
   # them: power and the PCI shim first, then the controller, then the device and
   # storage personalities. Must match Include/DXE.inc.
-  INF hongkongPkg/Binaries/QcomPkg/Drivers/UsbPwrCtrlDxe/UsbPwrCtrlDxe.inf
+  #INF hongkongPkg/Binaries/QcomPkg/Drivers/UsbPwrCtrlDxe/UsbPwrCtrlDxe.inf
   INF hongkongPkg/Binaries/QcomPkg/Drivers/UsbfnDwc3Dxe/UsbfnDwc3Dxe.inf
   INF hongkongPkg/Binaries/QcomPkg/Drivers/XhciPciEmulationDxe/XhciPciEmulationDxe.inf
   INF hongkongPkg/Binaries/QcomPkg/Drivers/XhciDxe/XhciDxe.inf
