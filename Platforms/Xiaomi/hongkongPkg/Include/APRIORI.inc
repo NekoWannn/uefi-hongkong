@@ -71,8 +71,7 @@ APRIORI DXE {
   INF hongkongPkg/Drivers/HongkongDisplayDepexDxe/HongkongDisplayDepexDxe.inf
   INF Binaries/hongkong/QcomPkg/Drivers/DisplayDxe/DisplayDxe.inf
 !else
-  # SimpleFbDxe left out, as in DXE.inc: publishing the GOP clears the panel.
-  #INF SiliciumPkg/Drivers/SimpleFbDxe/SimpleFbDxe.inf
+  INF SiliciumPkg/Drivers/SimpleFbDxe/SimpleFbDxe.inf
 !endif
 !if $(HONGKONG_VENDOR_HW) == 1
   INF Binaries/hongkong/QcomPkg/Drivers/PILProxyDxe/PILProxyDxe.inf
@@ -124,9 +123,7 @@ APRIORI DXE {
   INF EmbeddedPkg/SimpleTextInOutSerial/SimpleTextInOutSerial.inf
   INF MdeModulePkg/Universal/Console/ConPlatformDxe/ConPlatformDxe.inf
   INF MdeModulePkg/Universal/Console/ConSplitterDxe/ConSplitterDxe.inf
-  # GraphicsConsoleDxe is left out for the same reason as in DXE.inc: it clears
-  # the panel as soon as it starts, hiding everything around it.
-  #INF MdeModulePkg/Universal/Console/GraphicsConsoleDxe/GraphicsConsoleDxe.inf
+  INF MdeModulePkg/Universal/Console/GraphicsConsoleDxe/GraphicsConsoleDxe.inf
 
 !if $(HONGKONG_VENDOR_HW) == 1
   INF Binaries/hongkong/QcomPkg/Drivers/RscDxe/RscDxe.inf

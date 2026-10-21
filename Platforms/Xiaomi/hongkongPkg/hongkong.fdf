@@ -93,10 +93,8 @@ READ_LOCK_STATUS   = TRUE
   INF SiliciumPkg/Drivers/SmBiosTableDxe/SmBiosTableDxe.inf
 
   # UniXNU
-  # Held back while bringing the platform up: it clears the screen and takes
-  # the display over, so nothing after the console driver is observable.
-  #INF UniXNUPkg/Application/UniXNU/UniXNU.inf
-  #INF UniXNUPkg/Driver/UniXNUDxe/UniXNUDxe.inf
+  INF UniXNUPkg/Application/UniXNU/UniXNU.inf
+  INF UniXNUPkg/Driver/UniXNUDxe/UniXNUDxe.inf
 
   # IORT DT
   INF QcomPkg/Drivers/IortDtDxe/IortDtDxe.inf
