@@ -44,26 +44,14 @@ STATIC EFI_MEMORY_REGION_DESCRIPTOR gMemoryDescriptor[] = {
   /* The peripheral windows, named as the vendor memory map names them. Vendor
    * drivers touch their own registers through these, and none of them are DRAM,
    * so each was left unmapped and the first access raised a second-level
-   * translation fault - QcomHWWDogDxe at 0x03AD1004 was the first of them. */
-  {"SECURITY_CONTROL", 0x00780000, 0x00007000, AddMem, MMAP_IO, SYS_MEM_CAP, Reserv, UNCACHED_UNBUFFERED},
-  {"QUP", 0x00800000, 0x00300000, AddMem, MMAP_IO, SYS_MEM_CAP, Reserv, UNCACHED_UNBUFFERED},
-  {"AHB2PHY", 0x00FA0000, 0x00060000, AddMem, MMAP_IO, SYS_MEM_CAP, Reserv, UNCACHED_UNBUFFERED},
-  {"PRNG_CFG_PRNG", 0x010C0000, 0x0000C000, AddMem, MMAP_IO, SYS_MEM_CAP, Reserv, UNCACHED_UNBUFFERED},
-  {"IPC_ROUTER_TOP", 0x01100000, 0x00200000, AddMem, MMAP_IO, SYS_MEM_CAP, Reserv, UNCACHED_UNBUFFERED},
-  {"QUP1", 0x01900000, 0x00200000, AddMem, MMAP_IO, SYS_MEM_CAP, Reserv, UNCACHED_UNBUFFERED},
-  {"PERIPH_SS", 0x01C40000, 0x00020000, AddMem, MMAP_IO, SYS_MEM_CAP, Reserv, UNCACHED_UNBUFFERED},
-  {"CRYPTO0_CRYPTO", 0x01D20000, 0x00050000, AddMem, MMAP_IO, SYS_MEM_CAP, Reserv, UNCACHED_UNBUFFERED},
-  {"SMMU", 0x02E00000, 0x00200000, AddMem, MMAP_IO, SYS_MEM_CAP, Reserv, UNCACHED_UNBUFFERED},
+   * translation fault - QcomHWWDogDxe at 0x03AD1004 was the first of them.
+   *
+   * Only the three the current drivers actually need are declared: adding the
+   * whole set at once stopped SEC before it printed anything, and an earlier
+   * edit had left four of them duplicated. Grow this list one window at a time. */
   {"CORE_TOP_CSR", 0x03A00000, 0x00200000, AddMem, MMAP_IO, SYS_MEM_CAP, Reserv, UNCACHED_UNBUFFERED},
   {"USB", 0x0A600000, 0x00200000, AddMem, MMAP_IO, SYS_MEM_CAP, Reserv, UNCACHED_UNBUFFERED},
   {"AOSS", 0x0B000000, 0x04000000, AddMem, MMAP_IO, SYS_MEM_CAP, Reserv, UNCACHED_UNBUFFERED},
-  {"TLMM", 0x0F000000, 0x01000000, AddMem, MMAP_IO, SYS_MEM_CAP, Reserv, UNCACHED_UNBUFFERED},
-  {"IMEM_Base", 0x14680000, 0x0002C000, AddMem, MMAP_IO, SYS_MEM_CAP, Reserv, UNCACHED_UNBUFFERED},
-  {"APSS_HM", 0x17000000, 0x08000000, AddMem, MMAP_IO, SYS_MEM_CAP, Reserv, UNCACHED_UNBUFFERED},
-  {"regmap@0B000000", 0x0B000000, 0x04000000, AddMem, MMAP_IO, SYS_MEM_CAP, Reserv, UNCACHED_UNBUFFERED},
-  {"TLMM", 0x0F000000, 0x01000000, AddMem, MMAP_IO, SYS_MEM_CAP, Reserv, UNCACHED_UNBUFFERED},
-  {"IMEM_Base", 0x14680000, 0x0002C000, AddMem, MMAP_IO, SYS_MEM_CAP, Reserv, UNCACHED_UNBUFFERED},
-  {"APSS_HM", 0x17000000, 0x08000000, AddMem, MMAP_IO, SYS_MEM_CAP, Reserv, UNCACHED_UNBUFFERED},
 };
 
 VOID
