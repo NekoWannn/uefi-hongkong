@@ -3,14 +3,14 @@
 
   # Early infrastructure mirrored from the stock a priori list; the ones with
   # source here (DiskIo, Partition, English, Pcd, ArmCpu) are built normally.
-  INF Binaries/hongkong/QcomPkg/Drivers/QcomHWWDogDxe/QcomHWWDogDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/PlatformExceptionHandlerDxe/PlatformExceptionHandlerDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/RngDxe/RngDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/CryptoDxe/CryptoDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/Hash2DxeCrypto/Hash2DxeCrypto.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/QcomHWWDogDxe/QcomHWWDogDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/PlatformExceptionHandlerDxe/PlatformExceptionHandlerDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/RngDxe/RngDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/CryptoDxe/CryptoDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/Hash2DxeCrypto/Hash2DxeCrypto.inf
 
 !if $(HONGKONG_VENDOR_HW) == 1
-  INF Binaries/hongkong/QcomPkg/Drivers/EnvDxe/EnvDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/EnvDxe/EnvDxe.inf
 !endif
 
   INF MdeModulePkg/Universal/ReportStatusCodeRouter/RuntimeDxe/ReportStatusCodeRouterRuntimeDxe.inf
@@ -20,9 +20,9 @@
   INF MdeModulePkg/Universal/SecurityStubDxe/SecurityStubDxe.inf
 
 !if $(HONGKONG_VENDOR_HW) == 1
-  INF Binaries/hongkong/QcomPkg/Drivers/ShmBridgeDxe/ShmBridgeDxeLA.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/TzDxe/ScmDxeCompat.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/TzDxe/TzDxeLA.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/ShmBridgeDxe/ShmBridgeDxeLA.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/TzDxe/ScmDxeCompat.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/TzDxe/TzDxeLA.inf
 !endif
 
   INF MdeModulePkg/Universal/WatchdogTimerDxe/WatchdogTimer.inf
@@ -37,17 +37,17 @@
   INF ArmPkg/Drivers/TimerDxe/TimerDxe.inf
 
 !if $(HONGKONG_VENDOR_HW) == 1
-  INF Binaries/hongkong/QcomPkg/Drivers/ChipInfoDxe/ChipInfoDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/IPCCDxe/IPCCDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/GLinkDxe/GLinkDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/PlatformInfoDxe/PlatformInfoDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/ProjectInfoDxe/ProjectInfoDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/DALSYSDxe/DALSYSDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/HALIOMMUDxe/HALIOMMUDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/HWIODxe/HWIODxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/I2CDxe/I2CDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/TLMMDxe/TLMMDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/PmicDxe/PmicDxeLa.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/ChipInfoDxe/ChipInfoDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/IPCCDxe/IPCCDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/GLinkDxe/GLinkDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/PlatformInfoDxe/PlatformInfoDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/ProjectInfoDxe/ProjectInfoDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/DALSYSDxe/DALSYSDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/HALIOMMUDxe/HALIOMMUDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/HWIODxe/HWIODxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/I2CDxe/I2CDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/TLMMDxe/TLMMDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/PmicDxe/PmicDxeLa.inf
 !endif
 
   INF MdeModulePkg/Universal/DevicePathDxe/DevicePathDxe.inf
@@ -61,22 +61,22 @@
   INF MdeModulePkg/Universal/Disk/UnicodeCollation/EnglishDxe/EnglishDxe.inf
 
 !if $(HONGKONG_VENDOR_HW) == 1
-  INF Binaries/hongkong/QcomPkg/Drivers/UFSDxe/UFSDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/CmdDbDxe/CmdDbDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/PwrUtilsDxe/PwrUtilsDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/RpmhDxe/RpmhDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/NpaDxe/NpaDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/ULogDxe/ULogDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/VcsDxe/VcsDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/ClockDxe/ClockDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/SPMIDxe/SPMIDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/ICBDxe/ICBDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/SmemDxe/SmemDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/UFSDxe/UFSDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/CmdDbDxe/CmdDbDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/PwrUtilsDxe/PwrUtilsDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/RpmhDxe/RpmhDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/NpaDxe/NpaDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/ULogDxe/ULogDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/VcsDxe/VcsDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/ClockDxe/ClockDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/SPMIDxe/SPMIDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/ICBDxe/ICBDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/SmemDxe/SmemDxe.inf
 !endif
   INF MdeModulePkg/Universal/BdsDxe/BdsDxe.inf
 
 !if $(HONGKONG_VENDOR_HW) == 1
-  INF Binaries/hongkong/QcomPkg/Drivers/RscDxe/RscDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/RscDxe/RscDxe.inf
 !endif
 
   INF EmbeddedPkg/SimpleTextInOutSerial/SimpleTextInOutSerial.inf
@@ -91,10 +91,10 @@
 
   # Headless until stock sheng framebuffer data is available.
 !if $(HONGKONG_VENDOR_HW) == 1
-  INF Binaries/hongkong/QcomPkg/Drivers/GpiDxe/GpiDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/SPIDxe/SPIDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/SdccDxe/SdccDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/FeatureEnablerDxe/FeatureEnablerDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/GpiDxe/GpiDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/SPIDxe/SPIDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/SdccDxe/SdccDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/FeatureEnablerDxe/FeatureEnablerDxe.inf
 
   # USE_CUSTOM_DISPLAY_DRIVER = 1: stock sheng display chain (board DEPEX glue,
   # unchanged vendor DisplayDxe with the N81A panel data from RAW.inc).
@@ -104,7 +104,7 @@
 !if $(USE_CUSTOM_DISPLAY_DRIVER) == 1
   INF hongkongPkg/Drivers/HongkongGopLogDxe/HongkongGopLogDxe.inf
   INF hongkongPkg/Drivers/HongkongDisplayDepexDxe/HongkongDisplayDepexDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/DisplayDxe/DisplayDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/DisplayDxe/DisplayDxe.inf
 !else
   INF SiliciumPkg/Drivers/SimpleFbDxe/SimpleFbDxe.inf
 !endif
@@ -112,17 +112,17 @@
   # Headless until stock sheng framebuffer data is available.
 
 !if $(HONGKONG_VENDOR_HW) == 1
-  INF Binaries/hongkong/QcomPkg/Drivers/ButtonsDxe/ButtonsDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/ChargerExDxe/ChargerExDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/PmicGlinkDxe/PmicGlinkDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/QcomChargerDxe/QcomChargerDxeLA.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/UsbPwrCtrlDxe/UsbPwrCtrlDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/TsensDxe/TsensDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/LimitsDxe/LimitsDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/DDRInfoDxe/DDRInfoDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/UsbfnDwc3Dxe/UsbfnDwc3Dxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/XhciPciEmulationDxe/XhciPciEmulationDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/XhciDxe/XhciDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/ButtonsDxe/ButtonsDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/ChargerExDxe/ChargerExDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/PmicGlinkDxe/PmicGlinkDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/QcomChargerDxe/QcomChargerDxeLA.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/UsbPwrCtrlDxe/UsbPwrCtrlDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/TsensDxe/TsensDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/LimitsDxe/LimitsDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/DDRInfoDxe/DDRInfoDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/UsbfnDwc3Dxe/UsbfnDwc3Dxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/XhciPciEmulationDxe/XhciPciEmulationDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/XhciDxe/XhciDxe.inf
 !endif
 
   INF MdeModulePkg/Bus/Usb/UsbBusDxe/UsbBusDxe.inf
@@ -132,23 +132,23 @@
   # USB stack carried over from the device's own volume. The stock modules
   # declare no FFS DEPEX, so their order comes from Include/APRIORI.inc; keep the
   # two lists consistent.
-  INF Binaries/hongkong/QcomPkg/Drivers/UsbPwrCtrlDxe/UsbPwrCtrlDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/UsbfnDwc3Dxe/UsbfnDwc3Dxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/XhciPciEmulationDxe/XhciPciEmulationDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/XhciDxe/XhciDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/UsbDeviceDxe/UsbDeviceDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/UsbConfigDxe/UsbConfigDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/UsbInitDxe/UsbInitDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/UsbMsdDxe/UsbMsdDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/UsbPwrCtrlDxe/UsbPwrCtrlDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/UsbfnDwc3Dxe/UsbfnDwc3Dxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/XhciPciEmulationDxe/XhciPciEmulationDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/XhciDxe/XhciDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/UsbDeviceDxe/UsbDeviceDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/UsbConfigDxe/UsbConfigDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/UsbInitDxe/UsbInitDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/UsbMsdDxe/UsbMsdDxe.inf
 
 !if $(HONGKONG_VENDOR_HW) == 1
-  INF Binaries/hongkong/QcomPkg/Drivers/UsbMsdDxe/UsbMsdDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/UsbDeviceDxe/UsbDeviceDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/UsbConfigDxe/UsbConfigDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/UsbInitDxe/UsbInitDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/UCDxe/UCDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/RNGDxe/RngDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/PILDxe/PILDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/PILProxyDxe/PILProxyDxe.inf
-  INF Binaries/hongkong/QcomPkg/Drivers/SPSSDxe/SPSSDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/UsbMsdDxe/UsbMsdDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/UsbDeviceDxe/UsbDeviceDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/UsbConfigDxe/UsbConfigDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/UsbInitDxe/UsbInitDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/UCDxe/UCDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/RNGDxe/RngDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/PILDxe/PILDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/PILProxyDxe/PILProxyDxe.inf
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/SPSSDxe/SPSSDxe.inf
 !endif

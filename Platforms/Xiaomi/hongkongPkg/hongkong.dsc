@@ -124,21 +124,21 @@
   DarwinBootPkg/Driver/DarwinBoot.inf
 
   # Prebuilt early infrastructure, from the stock a priori list.
-  Binaries/hongkong/QcomPkg/Drivers/QcomHWWDogDxe/QcomHWWDogDxe.inf
-  Binaries/hongkong/QcomPkg/Drivers/PlatformExceptionHandlerDxe/PlatformExceptionHandlerDxe.inf
-  Binaries/hongkong/QcomPkg/Drivers/RngDxe/RngDxe.inf
-  Binaries/hongkong/QcomPkg/Drivers/CryptoDxe/CryptoDxe.inf
-  Binaries/hongkong/QcomPkg/Drivers/Hash2DxeCrypto/Hash2DxeCrypto.inf
+  hongkongPkg/Binaries/QcomPkg/Drivers/QcomHWWDogDxe/QcomHWWDogDxe.inf
+  hongkongPkg/Binaries/QcomPkg/Drivers/PlatformExceptionHandlerDxe/PlatformExceptionHandlerDxe.inf
+  hongkongPkg/Binaries/QcomPkg/Drivers/RngDxe/RngDxe.inf
+  hongkongPkg/Binaries/QcomPkg/Drivers/CryptoDxe/CryptoDxe.inf
+  hongkongPkg/Binaries/QcomPkg/Drivers/Hash2DxeCrypto/Hash2DxeCrypto.inf
 
   # Prebuilt USB drivers, carried over from the device's own firmware volume.
-  Binaries/hongkong/QcomPkg/Drivers/UsbPwrCtrlDxe/UsbPwrCtrlDxe.inf
-  Binaries/hongkong/QcomPkg/Drivers/UsbfnDwc3Dxe/UsbfnDwc3Dxe.inf
-  Binaries/hongkong/QcomPkg/Drivers/XhciPciEmulationDxe/XhciPciEmulationDxe.inf
-  Binaries/hongkong/QcomPkg/Drivers/XhciDxe/XhciDxe.inf
-  Binaries/hongkong/QcomPkg/Drivers/UsbDeviceDxe/UsbDeviceDxe.inf
-  Binaries/hongkong/QcomPkg/Drivers/UsbConfigDxe/UsbConfigDxe.inf
-  Binaries/hongkong/QcomPkg/Drivers/UsbInitDxe/UsbInitDxe.inf
-  Binaries/hongkong/QcomPkg/Drivers/UsbMsdDxe/UsbMsdDxe.inf
+  hongkongPkg/Binaries/QcomPkg/Drivers/UsbPwrCtrlDxe/UsbPwrCtrlDxe.inf
+  hongkongPkg/Binaries/QcomPkg/Drivers/UsbfnDwc3Dxe/UsbfnDwc3Dxe.inf
+  hongkongPkg/Binaries/QcomPkg/Drivers/XhciPciEmulationDxe/XhciPciEmulationDxe.inf
+  hongkongPkg/Binaries/QcomPkg/Drivers/XhciDxe/XhciDxe.inf
+  hongkongPkg/Binaries/QcomPkg/Drivers/UsbDeviceDxe/UsbDeviceDxe.inf
+  hongkongPkg/Binaries/QcomPkg/Drivers/UsbConfigDxe/UsbConfigDxe.inf
+  hongkongPkg/Binaries/QcomPkg/Drivers/UsbInitDxe/UsbInitDxe.inf
+  hongkongPkg/Binaries/QcomPkg/Drivers/UsbMsdDxe/UsbMsdDxe.inf
 
 [LibraryClasses]
   UniXNULib|UniXNUPkg/Library/UniXNULib/UniXNULib.inf
