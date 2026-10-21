@@ -157,7 +157,9 @@ jobs:
         run: |
           set -eux
           cd shim
-          python3 mkimg_bootshim.py
+          # Our own shim with the volume at 0x2F000: the concatenated BootShim
+          # layout that mkimg_bootshim.py produces was never accepted by ABL.
+          python3 mkimg.py
           ls -l out/*.img
 
       - uses: actions/upload-artifact@v4
