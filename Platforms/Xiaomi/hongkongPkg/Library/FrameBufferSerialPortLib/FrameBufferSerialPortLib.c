@@ -24,6 +24,8 @@
 #define MARGIN_Y    420U
 #define MARGIN_X    8U
 #define COLS        136U
+/* Rows that fit between MARGIN_Y and the bottom of the panel: 126 at 16px. */
+#define ROWS        ((FB_HEIGHT - MARGIN_Y) / CELL_H)
 #define FG          0xFFFFFFFFU
 #define BG          0xFF000000U
 
@@ -91,7 +93,7 @@ FbPutChar (
     __asm__ volatile("dsb sy" ::: "memory");
   }
 
-  if (mRow > 60) {
+  if (mRow >= ROWS) {
     mRow = 0;
   }
 }
