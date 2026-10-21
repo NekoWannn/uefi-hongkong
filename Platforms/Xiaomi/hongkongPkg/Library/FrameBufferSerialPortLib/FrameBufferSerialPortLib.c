@@ -47,7 +47,6 @@ typedef struct {
   UINT32 Col;
   UINT32 LineNo;
   UINT32 Pending;
-  UINT32 Beat;
 } CON_STATE;
 
 /* Several modules, and later several cores, write through the same cursor.
@@ -90,7 +89,6 @@ ConRelease (
 #define mCol          (CON_SHARED->Col)
 #define mLineNo       (CON_SHARED->LineNo)
 #define mPendingPrefix (CON_SHARED->Pending)
-#define mBeat         (CON_SHARED->Beat)
 
 /* Row clearing was removed: each cell paints its own background. */
 
@@ -107,6 +105,7 @@ FbPutChar (
   if (Ch == '\n') {
     mCol = 0;
     mRow++;
+    /* Number the next line so the screen shows how much was really printed. */
     mPendingPrefix = TRUE;
   } else if (Ch == '\r') {
     mCol = 0;
@@ -115,12 +114,11 @@ FbPutChar (
     if (Ch < 0x20 || Ch > 0x7E) {
       Ch = '?';
     }
-    /* Column zero is the only definition of "start of line": a separate flag
-     * drifted when another module moved the cursor, which skipped a number. */
-    if (mCol == 0) {
+    if (mPendingPrefix) {
       CHAR8 digits[10];
       UINT32 n = 0;
       UINT32 v = mLineNo++;
+      mPendingPrefix = FALSE;
       do {
         digits[n++] = (CHAR8)('0' + (v % 10));
         v /= 10;
@@ -198,21 +196,16 @@ SerialPortInitialize (
     return RETURN_SUCCESS;
   }
 
-  /* No screen clear: a clear loop here wipes the shim's output and looks
-   * exactly like a firmware that died, which made the last runs ambiguous. */
-  (void)y;
-  (void)x;
-  /* The lock lives in uninitialised memory at a fixed address. If it held a
-   * non-zero value the first DEBUG would spin forever and the firmware would
-   * print nothing at all, which is exactly what a stuck shim screen looks
-   * like. Clear it before anything can take it. */
-  CON_SHARED->Lock = 0;
-  __asm__ volatile("dsb sy" ::: "memory");
+  for (y = MARGIN_Y; y < MARGIN_Y + ROWS * CELL_H && y < FB_HEIGHT; y++) {
+    volatile UINT32 *line = FB_BASE + y * FB_STRIDE + MARGIN_X;
+    for (x = 0; x < COLS * CELL_W; x++) {
+      line[x] = BG;
+    }
+  }
   mRow = 0;
   mCol = 0;
   mLineNo = 1;
   mPendingPrefix = TRUE;
-  mBeat = 0;
   CON_SHARED->Magic = CON_MAGIC;
   return RETURN_SUCCESS;
 }
@@ -231,14 +224,6 @@ SerialPortWrite (
   ConAcquire ();
   for (i = 0; i < NumberOfBytes; i++) {
     FbPutChar ((CHAR8)Buffer[i]);
-  }
-  /* Heartbeat far below the log: a console clear wipes the text area, but this
-   * pixel survives it and keeps counting writes, so we can tell a hung
-   * firmware from one that is merely printing somewhere else. */
-  {
-    volatile UINT32 *beat = FB_BASE + 2000U * FB_STRIDE + 40U + (mBeat++ % 900U);
-    *beat = 0x00FFFFFFU;
-    __asm__ volatile("dc civac, %0" :: "r"(beat) : "memory");
   }
   ConRelease ();
   return NumberOfBytes;
