@@ -33,8 +33,10 @@ static const unsigned char font8x16[95][16] = {
 #include "font8x16.inc"
 };
 
-static UINT32 mRow;
-static UINT32 mCol;
+static UINT32  mRow;
+static UINT32  mCol;
+static UINT32  mLineNo = 1;
+static BOOLEAN mPendingPrefix = TRUE;
 
 /* Row clearing was removed: each cell paints its own background. */
 
@@ -51,12 +53,29 @@ FbPutChar (
   if (Ch == '\n') {
     mCol = 0;
     mRow++;
+    /* Number the next line so the screen shows how much was really printed. */
+    mPendingPrefix = TRUE;
   } else if (Ch == '\r') {
     mCol = 0;
     return;
   } else {
     if (Ch < 0x20 || Ch > 0x7E) {
       Ch = '?';
+    }
+    if (mPendingPrefix) {
+      CHAR8 digits[10];
+      UINT32 n = 0;
+      UINT32 v = mLineNo++;
+      mPendingPrefix = FALSE;
+      do {
+        digits[n++] = (CHAR8)('0' + (v % 10));
+        v /= 10;
+      } while (v != 0);
+      while (n > 0) {
+        FbPutChar (digits[--n]);
+      }
+      FbPutChar (':');
+      FbPutChar (' ');
     }
     if (mCol >= COLS) {
       mCol = 0;
