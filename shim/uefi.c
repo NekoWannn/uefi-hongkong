@@ -1,10 +1,9 @@
 /*
- * Stage the UEFI firmware from the proven bare-metal shim instead of letting
- * BootShim jump blind: draw on the framebuffer first, so a black screen can be
- * attributed to the panel, to the copy, or to the firmware itself.
- *
- * The payload is the SILICIUM_UEFI.fd image; it must end up at FD_BASE with
- * the MMU and caches off, exactly what BootShim would have done.
+ * Stage the UEFI firmware from the bare-metal shim, and prove that code placed
+ * at FD_BASE can actually be fetched and executed. Every earlier attempt ended
+ * with the firmware silent, so before blaming its contents, run a stub there:
+ * if the panel shows the stub's stripes, the region executes and the fault is
+ * inside the volume; if nothing appears, the region itself cannot run code.
  */
 #include <stdint.h>
 #include "console.h"
@@ -14,16 +13,39 @@
 
 extern char _Payload[];
 
-static void
-fill_rect(uint32_t y0, uint32_t y1, uint32_t colour)
-{
-	for (uint32_t y = y0; y < y1 && y < FB_H; y++) {
-		volatile uint32_t *row = (volatile uint32_t *)(FB_BASE + y * FB_STRIDE * 4);
-		for (uint32_t x = 0; x < 256; x++) {
-			row[x] = colour;
-		}
-	}
-}
+/* Position independent, no literal pool: builds the frame buffer address with
+ * movz/movk so the block can be copied anywhere and still run. */
+__asm__(
+  ".pushsection .stub,\"ax\",%progbits\n"
+  ".globl hk_stub_start\n"
+  "hk_stub_start:\n"
+  "  movz x1, #0xC600\n"
+  "  movk x1, #0xF8C6, lsl #16\n"
+  "  add  x1, x1, #0x0A80000\n"        /* row 600: 600 * 4480 * 4 */
+  "  movz w0, #0xFF00, lsl #16\n"      /* red */
+  "  mov  x2, #512\n"
+  "1:\n"
+  "  str  w0, [x1], #4\n"
+  "  subs x2, x2, #1\n"
+  "  b.ne 1b\n"
+  "  movz x1, #0xC600\n"
+  "  movk x1, #0xF8C6, lsl #16\n"
+  "  add  x1, x1, #0x0F00000\n"        /* row 960 */
+  "  movz w0, #0x00FF\n"               /* green */
+  "  mov  x2, #512\n"
+  "2:\n"
+  "  str  w0, [x1], #4\n"
+  "  subs x2, x2, #1\n"
+  "  b.ne 2b\n"
+  "3:\n"
+  "  b 3b\n"
+  ".globl hk_stub_end\n"
+  "hk_stub_end:\n"
+  ".popsection\n"
+);
+
+extern char hk_stub_start[];
+extern char hk_stub_end[];
 
 static void
 copy_to_fd_base(void)
@@ -42,29 +64,35 @@ copy_to_fd_base(void)
 int
 shim_main(uint64_t x0, uint64_t x1, uint64_t x2, uint64_t x3)
 {
-	(void)x0; (void)x1; (void)x2; (void)x3;
+	(void)x1; (void)x2; (void)x3;
 
 	con_clear(0x00000000u);
 	con_hex2("FB", "base=", FB_BASE, "stride=", FB_STRIDE);
 	con_hex2("PAYLOAD", "src=", (uintptr_t)_Payload, "dst=", FD_BASE);
-	con_hex2("FD", "size=", FD_SIZE, "h=", FB_H);
 
-	/* Two bands the eye cannot miss, drawn before anything else runs. */
-	fill_rect(300, 420, 0x00FF0000u);
-	fill_rect(460, 580, 0x0000FF00u);
-	con_str("SHIM", "bands drawn: red 300-420, green 460-580");
+	copy_to_fd_base();
+	con_str("COPY", "volume copied");
 
-	/* Execute the volume where ABL loaded it. The shim itself runs from this
-	 * region, so it is certainly fetchable; FD_BASE may not be. */
-	con_str("COPY", "skipped: running in place");
-	con_hex2("DTB", "x0=dtb=", (uint32_t)x0, "entry=", (uint32_t)(uintptr_t)_Payload);
+	/* Overwrite the first bytes of the copied volume with the stub, so the
+	 * jump target is code we control and know the layout of. */
+	{
+		uint64_t n = (uint64_t)(hk_stub_end - hk_stub_start);
+		volatile uint8_t *dst = (volatile uint8_t *)FD_BASE;
+		for (uint64_t i = 0; i < n; i++) {
+			dst[i] = (uint8_t)hk_stub_start[i];
+		}
+		con_hex("STUB", n);
+	}
+	con_str("RUN", "jumping to FD_BASE stub");
 
 	__asm__ volatile(
-		"dsb sy; ic iallu; dsb sy; isb\n"
-		"mov x0, %0\n"
-		"br  %1\n"
+		"dsb sy\n"
+		"ic iallu\n"
+		"dsb sy\n"
+		"isb\n"
+		"br  %0\n"
 		:
-		: "r"((uint64_t)x0), "r"((uint64_t)(uintptr_t)_Payload)
+		: "r"((uint64_t)FD_BASE)
 		: "memory");
 	return 0;
 }
