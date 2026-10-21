@@ -75,7 +75,11 @@
   INF MdeModulePkg/Universal/PrintDxe/PrintDxe.inf
   INF MdeModulePkg/Universal/Console/ConPlatformDxe/ConPlatformDxe.inf
   INF MdeModulePkg/Universal/Console/ConSplitterDxe/ConSplitterDxe.inf
-  INF hongkongPkg/Drivers/HongkongKeyInputDxe/HongkongKeyInputDxe.inf
+  # HongkongKeyInputDxe reads the PMIC through SPMI at a hard-coded 0x0C400000,
+  # which no region in the platform memory map covers, so its first register
+  # access faults with a second-level translation error. Keys only matter once
+  # there is a menu to navigate; bring it back with the SPMI base from the DTB.
+  #INF hongkongPkg/Drivers/HongkongKeyInputDxe/HongkongKeyInputDxe.inf
   INF MdeModulePkg/Universal/Console/GraphicsConsoleDxe/GraphicsConsoleDxe.inf
 
   # Headless until stock sheng framebuffer data is available.
