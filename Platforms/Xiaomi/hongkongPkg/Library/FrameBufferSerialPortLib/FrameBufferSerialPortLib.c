@@ -23,7 +23,9 @@
 #define CELL_H      16U
 #define MARGIN_Y    420U
 #define MARGIN_X    8U
-#define COLS        136U
+/* 120 columns is 960 pixels: it leaves a right margin instead of running the
+ * last characters into the edge of the panel. */
+#define COLS        120U
 /* Rows that fit between MARGIN_Y and the bottom of the panel: 126 at 16px. */
 #define ROWS        ((FB_HEIGHT - MARGIN_Y) / CELL_H)
 #define FG          0xFFFFFFFFU
