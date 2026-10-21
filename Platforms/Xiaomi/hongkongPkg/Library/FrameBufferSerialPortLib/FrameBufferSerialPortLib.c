@@ -105,7 +105,6 @@ FbPutChar (
   if (Ch == '\n') {
     mCol = 0;
     mRow++;
-    /* Number the next line so the screen shows how much was really printed. */
     mPendingPrefix = TRUE;
   } else if (Ch == '\r') {
     mCol = 0;
@@ -114,11 +113,12 @@ FbPutChar (
     if (Ch < 0x20 || Ch > 0x7E) {
       Ch = '?';
     }
-    if (mPendingPrefix) {
+    /* Column zero is the only definition of "start of line": a separate flag
+     * drifted when another module moved the cursor, which skipped a number. */
+    if (mCol == 0) {
       CHAR8 digits[10];
       UINT32 n = 0;
       UINT32 v = mLineNo++;
-      mPendingPrefix = FALSE;
       do {
         digits[n++] = (CHAR8)('0' + (v % 10));
         v /= 10;
