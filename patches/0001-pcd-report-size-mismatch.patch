@@ -1,0 +1,37 @@
+Subject: [PATCH] MdeModulePkg/Pcd: report a PCD whose size does not match
+
+The carried-over vendor drivers were built against a different PCD database, so
+a token number can land on a PCD of another size. PcdDxe asserts on that
+mismatch without naming the token, which makes the cause impossible to find.
+Print the token and both sizes so it can be matched against this build's
+generated PCD database.
+
+Paths in this patch are relative to the root of the uefi-sheng checkout, so it
+applies with a plain "git -C up apply" and no extra prefix option.
+
+diff --git a/Mu_Basecore/MdeModulePkg/Universal/PCD/Dxe/Service.c b/Mu_Basecore/MdeModulePkg/Universal/PCD/Dxe/Service.c
+index ccd01b7..6800b3b 100644
+--- a/Mu_Basecore/MdeModulePkg/Universal/PCD/Dxe/Service.c
++++ b/Mu_Basecore/MdeModulePkg/Universal/PCD/Dxe/Service.c
+@@ -414,6 +414,21 @@ GetWorker (
+   //
+   ASSERT (TokenNumber + 1 < mPcdTotalTokenCount + 1);
+ 
++  //
++  // Diagnosis for carried-over vendor drivers: report the token whose size does
++  // not match what the caller expects, so it can be named from the generated
++  // PCD database of this build.
++  //
++  if ((GetSize != 0) && (GetSize != DxePcdGetSize (TokenNumber + 1))) {
++    DEBUG ((
++      DEBUG_ERROR,
++      "PCD MISMATCH token %u: caller expects %u bytes, database has %u\n",
++      (UINT32)(TokenNumber + 1),
++      (UINT32)GetSize,
++      (UINT32)DxePcdGetSize (TokenNumber + 1)
++      ));
++  }
++
+   ASSERT ((GetSize == DxePcdGetSize (TokenNumber + 1)) || (GetSize == 0));
+ 
+   // EBC compiler is very choosy. It may report warning about comparison

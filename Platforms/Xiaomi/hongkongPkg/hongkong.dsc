@@ -131,9 +131,8 @@
   hongkongPkg/Binaries/QcomPkg/Drivers/Hash2DxeCrypto/Hash2DxeCrypto.inf
 
   # Prebuilt USB drivers, carried over from the device's own firmware volume.
-  # UsbPwrCtrlDxe left out: it reads dynamic PCDs by vendor token numbers and
-  # PcdDxe asserts when the sizes do not match ours.
-  #hongkongPkg/Binaries/QcomPkg/Drivers/UsbPwrCtrlDxe/UsbPwrCtrlDxe.inf
+  # Kept so the PcdDxe diagnostic can name the token it reads.
+  hongkongPkg/Binaries/QcomPkg/Drivers/UsbPwrCtrlDxe/UsbPwrCtrlDxe.inf
   hongkongPkg/Binaries/QcomPkg/Drivers/UsbfnDwc3Dxe/UsbfnDwc3Dxe.inf
   hongkongPkg/Binaries/QcomPkg/Drivers/XhciPciEmulationDxe/XhciPciEmulationDxe.inf
   hongkongPkg/Binaries/QcomPkg/Drivers/XhciDxe/XhciDxe.inf

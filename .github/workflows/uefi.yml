@@ -46,28 +46,20 @@ jobs:
           done
           test -f umbrella/package/DarwinBootPkg/Driver/DarwinBoot.inf
 
-      - name: Report mismatched PCD accesses
+      - name: Apply local patches
         run: |
           set -eux
-          # The carried-over vendor drivers were built against a different PCD
-          # database, so a token number can land on a PCD of another size and
-          # PcdDxe asserts without saying which one. Print the token, the size
-          # the caller asked for, and the size this build has.
-          python3 - <<'PY'
-          import pathlib
-          p = pathlib.Path("up/Mu_Basecore/MdeModulePkg/Universal/PCD/Dxe/Service.c")
-          s = p.read_text()
-          anchor = "  ASSERT (TokenNumber + 1 < mPcdTotalTokenCount + 1);\n"
-          assert anchor in s, "anchor not found"
-          diag = (
-              "  if ((GetSize != 0) && (GetSize != DxePcdGetSize (TokenNumber + 1))) {\n"
-              "    DEBUG ((DEBUG_ERROR, \"PCD MISMATCH token %u: caller expects %u bytes, database has %u\\n\",\n"
-              "      (UINT32)(TokenNumber + 1), (UINT32)GetSize, (UINT32)DxePcdGetSize (TokenNumber + 1)));\n"
-              "  }\n\n"
-          )
-          p.write_text(s.replace(anchor, anchor + "\n" + diag, 1))
-          PY
-          grep -n "PCD MISMATCH" up/Mu_Basecore/MdeModulePkg/Universal/PCD/Dxe/Service.c
+          shopt -s nullglob
+          # Every patch under patches/ is applied in name order against the
+          # upstream tree; paths inside a patch are relative to that tree's root.
+          # Removing a change is then just deleting its file here.
+          n=0
+          for p in "$GITHUB_WORKSPACE"/patches/*.patch; do
+            echo "applying $(basename "$p")"
+            git -C up apply --verbose "$p"
+            n=$((n + 1))
+          done
+          echo "applied $n patch(es)"
 
       - name: Overlay the hongkong packages
         run: |

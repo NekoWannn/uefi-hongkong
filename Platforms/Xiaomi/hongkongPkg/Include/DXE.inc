@@ -132,9 +132,9 @@
   # USB stack carried over from the device's own volume. The stock modules
   # declare no FFS DEPEX, so their order comes from Include/APRIORI.inc; keep the
   # two lists consistent.
-  # UsbPwrCtrlDxe is left out: it reads dynamic PCDs by the token numbers of the
-  # vendor build, which do not match ours, and PcdDxe asserts on the size check.
-  #INF hongkongPkg/Binaries/QcomPkg/Drivers/UsbPwrCtrlDxe/UsbPwrCtrlDxe.inf
+  # Kept in the volume: its dynamic PCD reads are what the PcdDxe diagnostic
+  # above is meant to name, so it must be present for the report to appear.
+  INF hongkongPkg/Binaries/QcomPkg/Drivers/UsbPwrCtrlDxe/UsbPwrCtrlDxe.inf
   INF hongkongPkg/Binaries/QcomPkg/Drivers/UsbfnDwc3Dxe/UsbfnDwc3Dxe.inf
   INF hongkongPkg/Binaries/QcomPkg/Drivers/XhciPciEmulationDxe/XhciPciEmulationDxe.inf
   INF hongkongPkg/Binaries/QcomPkg/Drivers/XhciDxe/XhciDxe.inf
