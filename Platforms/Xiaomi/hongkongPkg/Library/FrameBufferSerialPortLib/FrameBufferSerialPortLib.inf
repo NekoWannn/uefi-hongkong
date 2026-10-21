@@ -1,0 +1,24 @@
+## @file
+#  Serial port that paints onto the panel frame buffer.
+#
+#  Replacing SerialPortLib (and pointing DebugLib at the serial port flavour)
+#  routes every DEBUG() in SEC, PEI and DXE to 0xF8C60000, which is the only
+#  output channel this board has before a display driver exists.
+##
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = FrameBufferSerialPortLib
+  FILE_GUID                      = 5C1D7A62-9B4E-4C21-8F07-3D2E1A6B9C40
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = SerialPortLib
+
+[Sources]
+  FrameBufferSerialPortLib.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+
+[LibraryClasses]
+  BaseLib
+  BaseMemoryLib

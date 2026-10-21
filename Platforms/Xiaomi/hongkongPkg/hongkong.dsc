@@ -101,6 +101,12 @@
   MemoryMapLib|hongkongPkg/Library/MemoryMapLib/MemoryMapLib.inf
 
   #
+  # Console: there is no reachable UART, so DEBUG() paints the panel.
+  #
+  SerialPortLib|hongkongPkg/Library/FrameBufferSerialPortLib/FrameBufferSerialPortLib.inf
+  DebugLib|MdePkg/Library/BaseDebugLibSerialPort/BaseDebugLibSerialPort.inf
+
+  #
   # QCOM Libraries
   #
   ConfigurationMapLib|hongkongPkg/Library/ConfigurationMapLib/ConfigurationMapLib.inf
