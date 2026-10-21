@@ -49,7 +49,7 @@
   #
   gArmTokenSpaceGuid.PcdGicDistributorBase|0x17000000
   gArmTokenSpaceGuid.PcdGicRedistributorsBase|0x17080000
-'
+
   #
   # Arch timer PPIs, disassembled from this device's ArmTimerDxe: the setup
   # routine loads 29, 30, 27 and 26 into registers before programming the GIC.
