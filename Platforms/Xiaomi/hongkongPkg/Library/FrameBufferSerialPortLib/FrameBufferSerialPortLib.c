@@ -33,10 +33,25 @@ static const unsigned char font8x16[95][16] = {
 #include "font8x16.inc"
 };
 
-static UINT32  mRow;
-static UINT32  mCol;
-static UINT32  mLineNo = 1;
-static BOOLEAN mPendingPrefix = TRUE;
+/* Console state lives at a fixed physical address, not in a static: this
+ * library is linked into every module that uses DEBUG, so a static gives each
+ * of them its own cursor - SEC would write at row 18 while DxeCore wrote at row
+ * 0, clobbering the log and restarting the line numbers. */
+#define CON_SHARED  ((volatile CON_STATE *)0xC6C00000UL)
+#define CON_MAGIC   0x53474F4CU   /* 'LGOS' */
+
+typedef struct {
+  UINT32 Magic;
+  UINT32 Row;
+  UINT32 Col;
+  UINT32 LineNo;
+  UINT32 Pending;
+} CON_STATE;
+
+#define mRow          (CON_SHARED->Row)
+#define mCol          (CON_SHARED->Col)
+#define mLineNo       (CON_SHARED->LineNo)
+#define mPendingPrefix (CON_SHARED->Pending)
 
 /* Row clearing was removed: each cell paints its own background. */
 
@@ -137,7 +152,14 @@ SerialPortInitialize (
   UINT32 y;
   UINT32 x;
 
-  for (y = MARGIN_Y; y < MARGIN_Y + 60 * CELL_H && y < FB_HEIGHT; y++) {
+  /* Every module that uses DEBUG links its own copy of this library, so this
+   * runs once per module. Only the first one may clear the screen and reset the
+   * cursor; the rest must keep writing where the previous module stopped. */
+  if (CON_SHARED->Magic == CON_MAGIC) {
+    return RETURN_SUCCESS;
+  }
+
+  for (y = MARGIN_Y; y < MARGIN_Y + ROWS * CELL_H && y < FB_HEIGHT; y++) {
     volatile UINT32 *line = FB_BASE + y * FB_STRIDE + MARGIN_X;
     for (x = 0; x < COLS * CELL_W; x++) {
       line[x] = BG;
@@ -145,6 +167,9 @@ SerialPortInitialize (
   }
   mRow = 0;
   mCol = 0;
+  mLineNo = 1;
+  mPendingPrefix = TRUE;
+  CON_SHARED->Magic = CON_MAGIC;
   return RETURN_SUCCESS;
 }
 
