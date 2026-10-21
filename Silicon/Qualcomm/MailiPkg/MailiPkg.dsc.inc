@@ -49,6 +49,12 @@
   #
   gArmTokenSpaceGuid.PcdGicDistributorBase|0x17000000
   gArmTokenSpaceGuid.PcdGicRedistributorsBase|0x17080000
+  # The guide sets this to the redistributor base; without it the GIC CPU
+  # interface is programmed at whatever default the library carries.
+  gArmTokenSpaceGuid.PcdGicInterruptInterfaceBase|0x17080000
+  # Do not wait for a PMIC power-ok line this platform does not describe.
+  gQcomPkgTokenSpaceGuid.PcdIsPowerOkImplemented|FALSE
+  gArmTokenSpaceGuid.PcdHasLevel3Cache|FALSE
 
   #
   # Arch timer PPIs, disassembled from this device's ArmTimerDxe: the setup
