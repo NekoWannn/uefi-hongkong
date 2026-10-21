@@ -26,10 +26,11 @@ jobs:
           git clone --recursive --depth 1 --shallow-submodules \
             https://github.com/UniXNU/UniXNU.git umbrella
           cd up
-          # No "|| true" here: a half-cloned submodule used to surface much later
-          # as "MdePkg.dec: File/directory not found in workspace", which points
-          # nowhere near the real cause.
-          git submodule update --init --depth 1 \
+          # --recursive is needed: Mu_Basecore carries nested submodules such as
+          # MipiSysTLib/mipisyst, and MdePkg.dec lists their include directory,
+          # so a shallow non-recursive checkout fails the build with
+          # "File/directory not found in workspace".
+          git submodule update --init --recursive --depth 1 \
             Common/Mu Common/Mu_OEM_Sample Mu_Basecore Silicium-ACPI
           mkdir -p Binaries
 
