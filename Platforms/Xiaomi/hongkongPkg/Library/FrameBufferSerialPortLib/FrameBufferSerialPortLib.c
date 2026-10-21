@@ -16,7 +16,9 @@
 #define FB_BASE     ((volatile UINT32 *)0xF8C60000UL)
 #define FB_WIDTH    1120U
 #define FB_HEIGHT   2436U
-#define FB_STRIDE   4480U
+/* Row stride in UINT32 units: 4480 bytes per row / 4. Using the byte stride
+ * here advanced four rows per line and scattered the glyphs diagonally. */
+#define FB_STRIDE   1120U
 #define CELL_W      8U
 #define CELL_H      16U
 #define MARGIN_X    16U

@@ -3,6 +3,16 @@ SECTIONS
 {
 	. = 0;
 	.text : { *(.text.head) *(.text*) }
+	/* Both probes get copied to other addresses, so keep each in its own
+	 * output section with symbols marking its extent. */
+	. = ALIGN(4096);
+	__probe_a_start = .;
+	.probe_a : { *(.probe_a) }
+	__probe_a_end = .;
+	. = ALIGN(4096);
+	__probe_b_start = .;
+	.probe_b : { *(.probe_b) }
+	__probe_b_end = .;
 	.rodata : { *(.rodata*) }
 	.data : { *(.data*) }
 	. = ALIGN(16);

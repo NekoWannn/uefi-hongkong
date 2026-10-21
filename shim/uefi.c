@@ -1,51 +1,46 @@
 /*
- * Stage the UEFI firmware from the bare-metal shim, and prove that code placed
- * at FD_BASE can actually be fetched and executed. Every earlier attempt ended
- * with the firmware silent, so before blaming its contents, run a stub there:
- * if the panel shows the stub's stripes, the region executes and the fault is
- * inside the volume; if nothing appears, the region itself cannot run code.
+ * Working baseline. This is the version whose red and green blocks were seen on
+ * the panel: fill_rect() at rows 300-420 and 460-580, drawn before the volume
+ * copy, with the same console lines. Only two things are added on top:
+ * a data-cache clean over the copied volume, and the jump.
  */
 #include <stdint.h>
 #include "console.h"
 
 #define FD_BASE   0xC6800000UL
 #define FD_SIZE   0x369000UL
+#define FB_BASE   0xF8C60000UL
+#define FB_STRIDE 4480UL
+#define FB_H      2436UL
 
 extern char _Payload[];
 
-/* Position independent, no literal pool: builds the frame buffer address with
- * movz/movk so the block can be copied anywhere and still run. */
-__asm__(
-  ".pushsection .stub,\"ax\",%progbits\n"
-  ".globl hk_stub_start\n"
-  "hk_stub_start:\n"
-  "  movz x1, #0xC600\n"
-  "  movk x1, #0xF8C6, lsl #16\n"
-  "  add  x1, x1, #0x0A80000\n"        /* row 600: 600 * 4480 * 4 */
-  "  movz w0, #0xFF00, lsl #16\n"      /* red */
-  "  mov  x2, #512\n"
-  "1:\n"
-  "  str  w0, [x1], #4\n"
-  "  subs x2, x2, #1\n"
-  "  b.ne 1b\n"
-  "  movz x1, #0xC600\n"
-  "  movk x1, #0xF8C6, lsl #16\n"
-  "  add  x1, x1, #0x0F00000\n"        /* row 960 */
-  "  movz w0, #0x00FF\n"               /* green */
-  "  mov  x2, #512\n"
-  "2:\n"
-  "  str  w0, [x1], #4\n"
-  "  subs x2, x2, #1\n"
-  "  b.ne 2b\n"
-  "3:\n"
-  "  b 3b\n"
-  ".globl hk_stub_end\n"
-  "hk_stub_end:\n"
-  ".popsection\n"
-);
+static void
+fill_rect(uint32_t y0, uint32_t y1, uint32_t colour)
+{
+	for (uint32_t y = y0; y < y1 && y < FB_H; y++) {
+		volatile uint32_t *row = (volatile uint32_t *)(FB_BASE + y * FB_STRIDE * 4);
+		for (uint32_t x = 0; x < 256; x++) {
+			row[x] = colour;
+		}
+	}
+}
 
-extern char hk_stub_start[];
-extern char hk_stub_end[];
+static void
+clean_dcache(uintptr_t start, uint64_t len)
+{
+	uint64_t ctr;
+	uint32_t line;
+	uintptr_t p;
+	uintptr_t end = start + len;
+
+	__asm__ volatile("mrs %0, ctr_el0" : "=r"(ctr));
+	line = 4u << ((ctr >> 16) & 0xFu);
+	for (p = start & ~(uintptr_t)(line - 1); p < end; p += line) {
+		__asm__ volatile("dc civac, %0" :: "r"(p) : "memory");
+	}
+	__asm__ volatile("dsb sy" ::: "memory");
+}
 
 static void
 copy_to_fd_base(void)
@@ -64,30 +59,21 @@ copy_to_fd_base(void)
 int
 shim_main(uint64_t x0, uint64_t x1, uint64_t x2, uint64_t x3)
 {
-	(void)x1; (void)x2; (void)x3;
+	(void)x0; (void)x1; (void)x2; (void)x3;
 
 	con_clear(0x00000000u);
 	con_hex2("FB", "base=", FB_BASE, "stride=", FB_STRIDE);
 	con_hex2("PAYLOAD", "src=", (uintptr_t)_Payload, "dst=", FD_BASE);
+	con_hex2("FD", "size=", FD_SIZE, "h=", FB_H);
+
+	/* Unchanged from the version that was seen working. */
+	fill_rect(300, 420, 0x00FF0000u);
+	fill_rect(460, 580, 0x0000FF00u);
+	con_str("SHIM", "bands drawn: red 300-420, green 460-580");
 
 	copy_to_fd_base();
-	con_str("COPY", "volume copied");
-
-	/* Writes to FD_BASE may be dropped: the region can belong to TZ or be an
-	 * XPU-protected carveout. Read the pattern back before blaming fetch. */
-	{
-		volatile uint32_t *p = (volatile uint32_t *)FD_BASE;
-		p[0] = 0xDEADBEEFu;
-		p[0x40] = 0x12345678u;
-		__asm__ volatile("dsb sy" ::: "memory");
-		con_hex2("RAM", "w0=", 0xDEADBEEFu, "r0=", p[0]);
-		con_hex2("RAM", "w1=", 0x12345678u, "r1=", p[0x40]);
-	}
-
-	/* Control for the previous run: the same stub, executed where it was
-	 * linked. If the stripes appear here but not at FD_BASE, the stub is fine
-	 * and 0xC6800000 is what refuses to run code. */
-	con_str("RUN", "stub in place (expect stripes at 600/960)");
+	clean_dcache(FD_BASE, FD_SIZE);
+	con_str("COPY", "done, cache cleaned, jumping to FD_BASE");
 
 	__asm__ volatile(
 		"dsb sy\n"
@@ -96,7 +82,7 @@ shim_main(uint64_t x0, uint64_t x1, uint64_t x2, uint64_t x3)
 		"isb\n"
 		"br  %0\n"
 		:
-		: "r"((uint64_t)hk_stub_start)
+		: "r"((uint64_t)FD_BASE)
 		: "memory");
 	return 0;
 }
