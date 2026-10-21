@@ -21,8 +21,9 @@
 #define FB_STRIDE   1120U
 #define CELL_W      8U
 #define CELL_H      16U
-#define MARGIN_X    16U
 #define MARGIN_Y    420U
+#define MARGIN_X    8U
+#define COLS        136U
 #define FG          0xFFFFFFFFU
 #define BG          0xFF000000U
 
@@ -55,7 +56,7 @@ FbPutChar (
     if (Ch < 0x20 || Ch > 0x7E) {
       Ch = '?';
     }
-    if (mCol >= 100) {
+    if (mCol >= COLS) {
       mCol = 0;
       mRow++;
     }
@@ -106,7 +107,7 @@ SerialPortInitialize (
 
   for (y = MARGIN_Y; y < MARGIN_Y + 60 * CELL_H && y < FB_HEIGHT; y++) {
     volatile UINT32 *line = FB_BASE + y * FB_STRIDE + MARGIN_X;
-    for (x = 0; x < 100 * CELL_W; x++) {
+    for (x = 0; x < COLS * CELL_W; x++) {
       line[x] = BG;
     }
   }
