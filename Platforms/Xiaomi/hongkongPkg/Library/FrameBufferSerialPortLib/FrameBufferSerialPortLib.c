@@ -81,7 +81,9 @@ FbPutChar (
       mRow++;
     }
 
-    FbClearRow (mRow);
+    /* No row clear here: each cell already paints its own background, and
+     * clearing the row erased every earlier character on it, leaving only the
+     * last one visible per line. */
     glyph = (UINT32)(Ch - 0x20);
     for (y = 0; y < CELL_H; y++) {
       UINT32 row = MARGIN_Y + mRow * CELL_H + y;
