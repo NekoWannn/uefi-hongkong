@@ -92,7 +92,32 @@ ConRelease (
 #define mPendingPrefix (CON_SHARED->Pending)
 #define mPanic        (CON_SHARED->Panic)
 
-/* Row clearing was removed: each cell paints its own background. */
+/* Wipe one text row before it is reused. Without this, a shorter line leaves
+ * the tail of the previous one behind and the log reads as garbage. */
+STATIC
+VOID
+FbClearRow (
+  IN UINT32 Row
+  )
+{
+  UINT32 y;
+  UINT32 x;
+
+  if (Row >= ROWS) {
+    return;
+  }
+  for (y = 0; y < CELL_H; y++) {
+    UINT32 py = MARGIN_Y + Row * CELL_H + y;
+    volatile UINT32 *line;
+    if (py >= FB_HEIGHT) {
+      break;
+    }
+    line = FB_BASE + py * FB_STRIDE + MARGIN_X;
+    for (x = 0; x < COLS * CELL_W; x++) {
+      line[x] = BG;
+    }
+  }
+}
 
 STATIC
 VOID
@@ -107,6 +132,9 @@ FbPutChar (
   if (Ch == '\n') {
     mCol = 0;
     mRow++;
+    /* Wipe the row we are moving onto so nothing of the previous screen shows
+     * through under a shorter line. */
+    FbClearRow (mRow);
     /* Number the next line so the screen shows how much was really printed. */
     mPendingPrefix = TRUE;
   } else if (Ch == '\r') {
@@ -173,16 +201,9 @@ FbPutChar (
     if (mPanic) {
       return;
     }
-    /* Wrap: wipe the log area so the next screen always reads top-down and
-     * cannot be confused with leftovers from an earlier boot. */
-    UINT32 yy;
-    UINT32 xx;
-    for (yy = MARGIN_Y; yy < MARGIN_Y + ROWS * CELL_H && yy < FB_HEIGHT; yy++) {
-      volatile UINT32 *ln = FB_BASE + yy * FB_STRIDE + MARGIN_X;
-      for (xx = 0; xx < COLS * CELL_W; xx++) {
-        ln[xx] = BG;
-      }
-    }
+    /* Wrap without wiping: the panel then always holds the most recent rows,
+     * so when a panic is reported the lines that led up to it are still on
+     * screen instead of having been erased a moment earlier. */
     mRow = 0;
     mCol = 0;
   }
@@ -238,18 +259,8 @@ SerialPortWrite (
            Buffer[i + 2] == '!' && Buffer[i + 3] == '!') ||
           (Buffer[i] == 'A' && Buffer[i + 1] == 'S' && Buffer[i + 2] == 'S' &&
            Buffer[i + 3] == 'E' && Buffer[i + 4] == 'R' && Buffer[i + 5] == 'T')) {
-        /* Start the report at the top of the panel and stop scrolling once it
-         * fills, so the opening lines of a panic survive. */
-        UINT32 yy;
-        UINT32 xx;
-        for (yy = MARGIN_Y; yy < MARGIN_Y + ROWS * CELL_H && yy < FB_HEIGHT; yy++) {
-          volatile UINT32 *ln = FB_BASE + yy * FB_STRIDE + MARGIN_X;
-          for (xx = 0; xx < COLS * CELL_W; xx++) {
-            ln[xx] = BG;
-          }
-        }
-        mRow = 0;
-        mCol = 0;
+        /* Only arm the freeze: keep the rows already on screen, since those are
+         * the ones that led up to the fault. */
         mPanic = 1;
         break;
       }
