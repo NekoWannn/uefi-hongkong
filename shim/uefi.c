@@ -73,17 +73,10 @@ shim_main(uint64_t x0, uint64_t x1, uint64_t x2, uint64_t x3)
 	copy_to_fd_base();
 	con_str("COPY", "volume copied");
 
-	/* Overwrite the first bytes of the copied volume with the stub, so the
-	 * jump target is code we control and know the layout of. */
-	{
-		uint64_t n = (uint64_t)(hk_stub_end - hk_stub_start);
-		volatile uint8_t *dst = (volatile uint8_t *)FD_BASE;
-		for (uint64_t i = 0; i < n; i++) {
-			dst[i] = (uint8_t)hk_stub_start[i];
-		}
-		con_hex("STUB", n);
-	}
-	con_str("RUN", "jumping to FD_BASE stub");
+	/* Control for the previous run: the same stub, executed where it was
+	 * linked. If the stripes appear here but not at FD_BASE, the stub is fine
+	 * and 0xC6800000 is what refuses to run code. */
+	con_str("RUN", "stub in place (expect stripes at 600/960)");
 
 	__asm__ volatile(
 		"dsb sy\n"
@@ -92,7 +85,7 @@ shim_main(uint64_t x0, uint64_t x1, uint64_t x2, uint64_t x3)
 		"isb\n"
 		"br  %0\n"
 		:
-		: "r"((uint64_t)FD_BASE)
+		: "r"((uint64_t)hk_stub_start)
 		: "memory");
 	return 0;
 }
