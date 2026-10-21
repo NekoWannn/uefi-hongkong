@@ -123,7 +123,9 @@ APRIORI DXE {
   INF EmbeddedPkg/SimpleTextInOutSerial/SimpleTextInOutSerial.inf
   INF MdeModulePkg/Universal/Console/ConPlatformDxe/ConPlatformDxe.inf
   INF MdeModulePkg/Universal/Console/ConSplitterDxe/ConSplitterDxe.inf
-  INF MdeModulePkg/Universal/Console/GraphicsConsoleDxe/GraphicsConsoleDxe.inf
+  # GraphicsConsoleDxe is left out for the same reason as in DXE.inc: it clears
+  # the panel as soon as it starts, hiding everything around it.
+  #INF MdeModulePkg/Universal/Console/GraphicsConsoleDxe/GraphicsConsoleDxe.inf
 
 !if $(HONGKONG_VENDOR_HW) == 1
   INF Binaries/hongkong/QcomPkg/Drivers/RscDxe/RscDxe.inf

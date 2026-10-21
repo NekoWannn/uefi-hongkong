@@ -76,7 +76,10 @@
   INF MdeModulePkg/Universal/Console/ConPlatformDxe/ConPlatformDxe.inf
   INF MdeModulePkg/Universal/Console/ConSplitterDxe/ConSplitterDxe.inf
   INF hongkongPkg/Drivers/HongkongKeyInputDxe/HongkongKeyInputDxe.inf
-  INF MdeModulePkg/Universal/Console/GraphicsConsoleDxe/GraphicsConsoleDxe.inf
+  # GraphicsConsoleDxe is left out: it re-sets the GOP mode and clears the panel
+  # the moment it starts, so nothing that runs before or after it stays visible.
+  # Bring it back once the debug port has another output channel.
+  #INF MdeModulePkg/Universal/Console/GraphicsConsoleDxe/GraphicsConsoleDxe.inf
 
   # Headless until stock sheng framebuffer data is available.
 !if $(HONGKONG_VENDOR_HW) == 1
