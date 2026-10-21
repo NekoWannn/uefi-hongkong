@@ -71,12 +71,18 @@ shim_main(uint64_t x0, uint64_t x1, uint64_t x2, uint64_t x3)
 	fill_rect(460, 580, 0x0000FF00u);
 	con_str("SHIM", "bands drawn: red 300-420, green 460-580");
 
-	/* Test build: stop here without copying the volume or jumping to it. If the
-	 * panel stays readable the copy was destroying the scanned-out buffer; if it
-	 * still goes black, the firmware is not the cause. */
-	con_str("STOP", "no copy, no jump; halting");
-	for (;;) {
-		__asm__ volatile("wfi");
-	}
+	copy_to_fd_base();
+	clean_dcache(FD_BASE, FD_SIZE);
+	con_str("COPY", "done, cache cleaned, jumping to FD_BASE");
+
+	__asm__ volatile(
+		"dsb sy\n"
+		"ic iallu\n"
+		"dsb sy\n"
+		"isb\n"
+		"br  %0\n"
+		:
+		: "r"((uint64_t)FD_BASE)
+		: "memory");
 	return 0;
 }
