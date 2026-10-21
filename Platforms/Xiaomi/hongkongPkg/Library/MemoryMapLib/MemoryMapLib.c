@@ -40,11 +40,6 @@ STATIC EFI_MEMORY_REGION_DESCRIPTOR gMemoryDescriptor[] = {
   {"Global_SYNC", 0xD7A00000, 0x00200000, AddMem, MEM_RES, SYS_MEM_CAP, Reserv, UNCACHED_UNBUFFERED},
   {"TAGS", 0xD8800000, 0x075A0000, AddMem, MEM_RES, SYS_MEM_CAP, Reserv, UNCACHED_UNBUFFERED},
   {"Display_Reserved", 0xF8C60000, 0x02B00000, AddMem, MEM_RES, SYS_MEM_CAP, Reserv, UNCACHED_UNBUFFERED},
-  /* SPMI arbiter and its two child buses, as declared by
-   * Common/DeviceTree/Core/PMIC/spmi_pmic_arb.dtsi. MMIO is not part of the
-   * DRAM map, so without an entry here the MMU leaves it unmapped and the first
-   * register access is a second-level translation fault. */
-  {"SPMI", 0x0C425000, 0x00500000, AddMem, MMAP_IO, SYS_MEM_CAP, Reserv, UNCACHED_UNBUFFERED},
 
   /* The peripheral windows, named as the vendor memory map names them. Vendor
    * drivers touch their own registers through these, and none of them are DRAM,
