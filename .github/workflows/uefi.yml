@@ -128,12 +128,13 @@ jobs:
           set -eux
           # Every PCD gets a _PCD_TOKEN_<name> define in its module's AutoGen.h.
           # Harvest them so a token number in a crash report can be turned back
-          # into a PCD name without rebuilding anything. The value is written in
-          # hex, so match the whole 0x... literal rather than only its first 0.
-          grep -rhoE '_PCD_TOKEN_[A-Za-z0-9_]+ +0x[0-9A-Fa-f]+' up/Build \
-            | sort -u > pcd-tokens.txt
+          # into a PCD name without rebuilding anything. The separator is a tab,
+          # not spaces, and the value can be written either in hex or decimal.
+          grep -rhoE '_PCD_TOKEN_[A-Za-z0-9_]+[[:space:]]+(0[xX][0-9A-Fa-f]+|[0-9]+)' up/Build \
+            | tr -s '[:space:]' ' ' | sort -u > pcd-tokens.txt
           wc -l pcd-tokens.txt
-          grep -E ' 0x0*5$' pcd-tokens.txt || true
+          grep -E ' 0x0*5$| 5$' pcd-tokens.txt || true
+          grep -i 'DmaDeviceOffset' pcd-tokens.txt || true
 
       - uses: actions/upload-artifact@v4
         with:
