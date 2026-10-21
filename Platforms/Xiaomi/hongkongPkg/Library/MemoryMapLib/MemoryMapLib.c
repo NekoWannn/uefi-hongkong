@@ -45,6 +45,26 @@ STATIC EFI_MEMORY_REGION_DESCRIPTOR gMemoryDescriptor[] = {
    * DRAM map, so without an entry here the MMU leaves it unmapped and the first
    * register access is a second-level translation fault. */
   {"SPMI", 0x0C425000, 0x00500000, AddMem, MMAP_IO, SYS_MEM_CAP, Reserv, UNCACHED_UNBUFFERED},
+
+  /* Every window from the device's /soc/registermap. Vendor drivers touch their
+   * own peripheral registers through these, and none of them are DRAM, so each
+   * was left unmapped and the first access raised a second-level translation
+   * fault - QcomHWWDogDxe at 0x03AD1004 was the first of them. */
+  {"regmap@00780000", 0x00780000, 0x00007000, AddMem, MMAP_IO, SYS_MEM_CAP, Reserv, UNCACHED_UNBUFFERED},
+  {"regmap@00800000", 0x00800000, 0x00300000, AddMem, MMAP_IO, SYS_MEM_CAP, Reserv, UNCACHED_UNBUFFERED},
+  {"regmap@00FA0000", 0x00FA0000, 0x00060000, AddMem, MMAP_IO, SYS_MEM_CAP, Reserv, UNCACHED_UNBUFFERED},
+  {"regmap@010C0000", 0x010C0000, 0x0000C000, AddMem, MMAP_IO, SYS_MEM_CAP, Reserv, UNCACHED_UNBUFFERED},
+  {"regmap@01100000", 0x01100000, 0x00200000, AddMem, MMAP_IO, SYS_MEM_CAP, Reserv, UNCACHED_UNBUFFERED},
+  {"regmap@01900000", 0x01900000, 0x00200000, AddMem, MMAP_IO, SYS_MEM_CAP, Reserv, UNCACHED_UNBUFFERED},
+  {"regmap@01C40000", 0x01C40000, 0x00020000, AddMem, MMAP_IO, SYS_MEM_CAP, Reserv, UNCACHED_UNBUFFERED},
+  {"regmap@01D20000", 0x01D20000, 0x00050000, AddMem, MMAP_IO, SYS_MEM_CAP, Reserv, UNCACHED_UNBUFFERED},
+  {"regmap@02E00000", 0x02E00000, 0x00200000, AddMem, MMAP_IO, SYS_MEM_CAP, Reserv, UNCACHED_UNBUFFERED},
+  {"regmap@03A00000", 0x03A00000, 0x00200000, AddMem, MMAP_IO, SYS_MEM_CAP, Reserv, UNCACHED_UNBUFFERED},
+  {"regmap@0A600000", 0x0A600000, 0x00200000, AddMem, MMAP_IO, SYS_MEM_CAP, Reserv, UNCACHED_UNBUFFERED},
+  {"regmap@0B000000", 0x0B000000, 0x04000000, AddMem, MMAP_IO, SYS_MEM_CAP, Reserv, UNCACHED_UNBUFFERED},
+  {"regmap@0F000000", 0x0F000000, 0x01000000, AddMem, MMAP_IO, SYS_MEM_CAP, Reserv, UNCACHED_UNBUFFERED},
+  {"regmap@14680000", 0x14680000, 0x0002C000, AddMem, MMAP_IO, SYS_MEM_CAP, Reserv, UNCACHED_UNBUFFERED},
+  {"regmap@17000000", 0x17000000, 0x08000000, AddMem, MMAP_IO, SYS_MEM_CAP, Reserv, UNCACHED_UNBUFFERED},
 };
 
 VOID
