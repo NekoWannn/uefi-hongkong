@@ -106,6 +106,22 @@ jobs:
             printf '\n**State:** Active\n**Codename:** hongkong\n**Models:** 1\n' >> Status.md
           fi
 
+      - name: Restore the build cache
+        uses: actions/cache@v4
+        with:
+          # EDK2 rebuilds only what changed when its build tree survives, so the
+          # object files and the generated makefiles are worth carrying between
+          # runs. The key includes the run id so a fresh cache is saved every
+          # time, while restore-keys pick the most recent one for the same
+          # platform sources.
+          path: |
+            up/Build
+            up/Conf
+          key: edk2-${{ hashFiles('overlay/Platforms/**', 'overlay/patches/**') }}-${{ github.run_id }}
+          restore-keys: |
+            edk2-${{ hashFiles('overlay/Platforms/**', 'overlay/patches/**') }}-
+            edk2-
+
       - name: Build the hongkong firmware volume
         env:
           UNIXNU_ROOT: ${{ github.workspace }}/umbrella
@@ -116,6 +132,23 @@ jobs:
             find Build -name '*.log' -print -exec tail -n 100 {} \; 2>/dev/null || true
             exit 1
           }
+
+      - name: Collect PCD token numbers
+        run: |
+          set -eux
+          # Every PCD gets a _PCD_TOKEN_<name> define in its module's AutoGen.h.
+          # Harvest them so a token number in a crash report can be turned back
+          # into a PCD name without rebuilding anything.
+          grep -rhoE '_PCD_TOKEN_[A-Za-z0-9_]+ +[0-9]+' up/Build \
+            | sort -u > pcd-tokens.txt
+          wc -l pcd-tokens.txt
+          grep -E ' 5$' pcd-tokens.txt || true
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pcd-tokens
+          path: pcd-tokens.txt
+          if-no-files-found: error
 
       - name: Collect the firmware volume
         run: |
