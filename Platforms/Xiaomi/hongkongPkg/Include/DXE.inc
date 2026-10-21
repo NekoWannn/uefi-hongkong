@@ -98,7 +98,10 @@
   INF hongkongPkg/Drivers/HongkongDisplayDepexDxe/HongkongDisplayDepexDxe.inf
   INF Binaries/hongkong/QcomPkg/Drivers/DisplayDxe/DisplayDxe.inf
 !else
-  INF SiliciumPkg/Drivers/SimpleFbDxe/SimpleFbDxe.inf
+  # SimpleFbDxe is left out for now: publishing the GOP clears the frame buffer,
+  # which erases the debug output written before DXE reaches it. Nothing else
+  # needs a GOP while the platform is being brought up.
+  #INF SiliciumPkg/Drivers/SimpleFbDxe/SimpleFbDxe.inf
 !endif
 
   # Headless until stock sheng framebuffer data is available.

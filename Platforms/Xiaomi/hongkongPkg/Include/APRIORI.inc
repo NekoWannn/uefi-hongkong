@@ -71,7 +71,8 @@ APRIORI DXE {
   INF hongkongPkg/Drivers/HongkongDisplayDepexDxe/HongkongDisplayDepexDxe.inf
   INF Binaries/hongkong/QcomPkg/Drivers/DisplayDxe/DisplayDxe.inf
 !else
-  INF SiliciumPkg/Drivers/SimpleFbDxe/SimpleFbDxe.inf
+  # SimpleFbDxe left out, as in DXE.inc: publishing the GOP clears the panel.
+  #INF SiliciumPkg/Drivers/SimpleFbDxe/SimpleFbDxe.inf
 !endif
 !if $(HONGKONG_VENDOR_HW) == 1
   INF Binaries/hongkong/QcomPkg/Drivers/PILProxyDxe/PILProxyDxe.inf
