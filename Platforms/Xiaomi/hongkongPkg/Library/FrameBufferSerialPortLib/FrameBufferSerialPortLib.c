@@ -102,8 +102,6 @@ FbPutChar (
   UINT32 y;
   UINT32 bit;
 
-  ConAcquire ();
-
   if (Ch == '\n') {
     mCol = 0;
     mRow++;
@@ -180,8 +178,6 @@ FbPutChar (
     mRow = 0;
     mCol = 0;
   }
-
-  ConRelease ();
 }
 
 RETURN_STATUS
@@ -223,9 +219,13 @@ SerialPortWrite (
 {
   UINTN i;
 
+  /* Hold the lock for the whole buffer: locking per character still lets two
+   * modules interleave their messages into one garbled line. */
+  ConAcquire ();
   for (i = 0; i < NumberOfBytes; i++) {
     FbPutChar ((CHAR8)Buffer[i]);
   }
+  ConRelease ();
   return NumberOfBytes;
 }
 
