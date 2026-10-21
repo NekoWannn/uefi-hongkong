@@ -1,0 +1,19 @@
+## @file
+#  Prebuilt CryptoDxe, taken from the device's own firmware volume.
+#
+#  The stock a priori list dispatches this early; it has no source here, so the
+#  .inf only declares the payload.
+##
+
+[Defines]
+  INF_VERSION    = 0x00010005
+  BASE_NAME      = CryptoDxe
+  FILE_GUID      = 05DA7054-2D03-53CE-8A44-3D32F42E71A6
+  MODULE_TYPE    = DXE_DRIVER
+  VERSION_STRING = 1.0
+
+[Binaries]
+  PE32|CryptoDxe.efi
+
+[Packages]
+  MdePkg/MdePkg.dec

@@ -1,0 +1,19 @@
+## @file
+#  Prebuilt UsbKbDxe taken from the device's own firmware volume.
+#
+#  There is no source for this driver, so the .inf only declares the binary and
+#  how it loads. The payload keeps the DEPEX section UEFITool extracted with it.
+##
+
+[Defines]
+  INF_VERSION    = 0x00010005
+  BASE_NAME      = UsbKbDxe
+  FILE_GUID      = CB41D4F0-4F0A-5AFF-A5DF-F168F8F37C7B
+  MODULE_TYPE    = DXE_DRIVER
+  VERSION_STRING = 1.0
+
+[Binaries]
+  PE32|UsbKbDxe.efi
+
+[Packages]
+  MdePkg/MdePkg.dec

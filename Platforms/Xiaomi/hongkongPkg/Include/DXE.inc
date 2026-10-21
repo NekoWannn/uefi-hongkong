@@ -1,6 +1,14 @@
   INF MdeModulePkg/Core/Dxe/DxeMain.inf
   INF MdeModulePkg/Universal/PCD/Dxe/Pcd.inf
 
+  # Early infrastructure mirrored from the stock a priori list; the ones with
+  # source here (DiskIo, Partition, English, Pcd, ArmCpu) are built normally.
+  INF Binaries/hongkong/QcomPkg/Drivers/QcomHWWDogDxe/QcomHWWDogDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/PlatformExceptionHandlerDxe/PlatformExceptionHandlerDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/RngDxe/RngDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/CryptoDxe/CryptoDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/Hash2DxeCrypto/Hash2DxeCrypto.inf
+
 !if $(HONGKONG_VENDOR_HW) == 1
   INF Binaries/hongkong/QcomPkg/Drivers/EnvDxe/EnvDxe.inf
 !endif
@@ -120,6 +128,18 @@
   INF MdeModulePkg/Bus/Usb/UsbBusDxe/UsbBusDxe.inf
   INF MdeModulePkg/Bus/Usb/UsbKbDxe/UsbKbDxe.inf
   INF MdeModulePkg/Bus/Usb/UsbMassStorageDxe/UsbMassStorageDxe.inf
+
+  # USB stack carried over from the device's own volume. The stock modules
+  # declare no FFS DEPEX, so their order comes from Include/APRIORI.inc; keep the
+  # two lists consistent.
+  INF Binaries/hongkong/QcomPkg/Drivers/UsbPwrCtrlDxe/UsbPwrCtrlDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/UsbfnDwc3Dxe/UsbfnDwc3Dxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/XhciPciEmulationDxe/XhciPciEmulationDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/XhciDxe/XhciDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/UsbDeviceDxe/UsbDeviceDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/UsbConfigDxe/UsbConfigDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/UsbInitDxe/UsbInitDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/UsbMsdDxe/UsbMsdDxe.inf
 
 !if $(HONGKONG_VENDOR_HW) == 1
   INF Binaries/hongkong/QcomPkg/Drivers/UsbMsdDxe/UsbMsdDxe.inf

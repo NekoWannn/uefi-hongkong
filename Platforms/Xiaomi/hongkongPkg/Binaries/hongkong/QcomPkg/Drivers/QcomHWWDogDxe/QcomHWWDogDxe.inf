@@ -1,0 +1,19 @@
+## @file
+#  Prebuilt QcomHWWDogDxe, taken from the device's own firmware volume.
+#
+#  The stock a priori list dispatches this early; it has no source here, so the
+#  .inf only declares the payload.
+##
+
+[Defines]
+  INF_VERSION    = 0x00010005
+  BASE_NAME      = QcomHWWDogDxe
+  FILE_GUID      = BCF978A1-FE22-5A22-8D6B-67B2D2EAF413
+  MODULE_TYPE    = DXE_DRIVER
+  VERSION_STRING = 1.0
+
+[Binaries]
+  PE32|QcomHWWDogDxe.efi
+
+[Packages]
+  MdePkg/MdePkg.dec

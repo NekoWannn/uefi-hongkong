@@ -1,0 +1,19 @@
+## @file
+#  Prebuilt RngDxe, taken from the device's own firmware volume.
+#
+#  The stock a priori list dispatches this early; it has no source here, so the
+#  .inf only declares the payload.
+##
+
+[Defines]
+  INF_VERSION    = 0x00010005
+  BASE_NAME      = RngDxe
+  FILE_GUID      = 5EC8AE3D-54E1-5FE7-9ACC-2B8CD1223CD5
+  MODULE_TYPE    = DXE_DRIVER
+  VERSION_STRING = 1.0
+
+[Binaries]
+  PE32|RngDxe.efi
+
+[Packages]
+  MdePkg/MdePkg.dec

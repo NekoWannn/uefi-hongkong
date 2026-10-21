@@ -1,0 +1,20 @@
+## @file
+#  Prebuilt XhciPciEmulationDxe.
+#
+#  On this device the stock volume ships the generic NonDiscoverablePciDeviceDxe
+#  under this name; it is the driver that gives XhciDxe a PCI I/O interface for a
+#  controller that is fixed MMIO rather than discoverable.
+##
+
+[Defines]
+  INF_VERSION    = 0x00010005
+  BASE_NAME      = XhciPciEmulationDxe
+  FILE_GUID      = 5B1B31A1-9562-11D2-8E3F-00A0C969723B
+  MODULE_TYPE    = DXE_DRIVER
+  VERSION_STRING = 1.0
+
+[Binaries]
+  PE32|XhciPciEmulationDxe.efi
+
+[Packages]
+  MdePkg/MdePkg.dec

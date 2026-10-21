@@ -1,6 +1,10 @@
 APRIORI DXE {
   INF MdeModulePkg/Core/Dxe/DxeMain.inf
+  # Order below follows the stock volume's a priori list, which puts the watchdog
+  # before the PCD database and the exception handler straight after it.
+  INF Binaries/hongkong/QcomPkg/Drivers/QcomHWWDogDxe/QcomHWWDogDxe.inf
   INF MdeModulePkg/Universal/PCD/Dxe/Pcd.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/PlatformExceptionHandlerDxe/PlatformExceptionHandlerDxe.inf
 
 !if $(HONGKONG_VENDOR_HW) == 1
   INF Binaries/hongkong/QcomPkg/Drivers/EnvDxe/EnvDxe.inf
@@ -10,6 +14,10 @@ APRIORI DXE {
   INF MdeModulePkg/Universal/StatusCodeHandler/RuntimeDxe/StatusCodeHandlerRuntimeDxe.inf
   INF MdeModulePkg/Core/RuntimeDxe/RuntimeDxe.inf
   INF ArmPkg/Drivers/CpuDxe/CpuDxe.inf
+  # Crypto comes last in the stock a priori list, after the CPU driver.
+  INF Binaries/hongkong/QcomPkg/Drivers/RngDxe/RngDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/CryptoDxe/CryptoDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/Hash2DxeCrypto/Hash2DxeCrypto.inf
   INF ArmPkg/Drivers/ArmGicDxe/ArmGicDxe.inf
   INF EmbeddedPkg/MetronomeDxe/MetronomeDxe.inf
   INF ArmPkg/Drivers/TimerDxe/TimerDxe.inf
@@ -103,6 +111,18 @@ APRIORI DXE {
   INF MdeModulePkg/Bus/Usb/UsbBusDxe/UsbBusDxe.inf
   INF MdeModulePkg/Bus/Usb/UsbKbDxe/UsbKbDxe.inf
   INF MdeModulePkg/Bus/Usb/UsbMassStorageDxe/UsbMassStorageDxe.inf
+
+  # The carried-over USB modules declare no DEPEX, so this list is what orders
+  # them: power and the PCI shim first, then the controller, then the device and
+  # storage personalities. Must match Include/DXE.inc.
+  INF Binaries/hongkong/QcomPkg/Drivers/UsbPwrCtrlDxe/UsbPwrCtrlDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/UsbfnDwc3Dxe/UsbfnDwc3Dxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/XhciPciEmulationDxe/XhciPciEmulationDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/XhciDxe/XhciDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/UsbDeviceDxe/UsbDeviceDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/UsbConfigDxe/UsbConfigDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/UsbInitDxe/UsbInitDxe.inf
+  INF Binaries/hongkong/QcomPkg/Drivers/UsbMsdDxe/UsbMsdDxe.inf
 
 !if $(HONGKONG_VENDOR_HW) == 1
   INF Binaries/hongkong/QcomPkg/Drivers/UsbMsdDxe/UsbMsdDxe.inf

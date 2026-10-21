@@ -1,0 +1,19 @@
+## @file
+#  Prebuilt Hash2DxeCrypto, taken from the device's own firmware volume.
+#
+#  The stock a priori list dispatches this early; it has no source here, so the
+#  .inf only declares the payload.
+##
+
+[Defines]
+  INF_VERSION    = 0x00010005
+  BASE_NAME      = Hash2DxeCrypto
+  FILE_GUID      = AD004BAE-E64E-5A59-BB4A-D536FED9B934
+  MODULE_TYPE    = DXE_DRIVER
+  VERSION_STRING = 1.0
+
+[Binaries]
+  PE32|Hash2DxeCrypto.efi
+
+[Packages]
+  MdePkg/MdePkg.dec

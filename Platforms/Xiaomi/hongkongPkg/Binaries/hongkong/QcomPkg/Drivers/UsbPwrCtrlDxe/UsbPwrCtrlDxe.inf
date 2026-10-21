@@ -1,0 +1,19 @@
+## @file
+#  Prebuilt UsbPwrCtrlDxe taken from the device's own firmware volume.
+#
+#  There is no source for this driver, so the .inf only declares the binary and
+#  how it loads. The payload keeps the DEPEX section UEFITool extracted with it.
+##
+
+[Defines]
+  INF_VERSION    = 0x00010005
+  BASE_NAME      = UsbPwrCtrlDxe
+  FILE_GUID      = AF1617CF-27F0-5C44-B38A-2C716345850B
+  MODULE_TYPE    = DXE_DRIVER
+  VERSION_STRING = 1.0
+
+[Binaries]
+  PE32|UsbPwrCtrlDxe.efi
+
+[Packages]
+  MdePkg/MdePkg.dec
