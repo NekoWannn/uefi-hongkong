@@ -47,6 +47,7 @@ typedef struct {
   UINT32 Col;
   UINT32 LineNo;
   UINT32 Pending;
+  UINT32 Panic;
 } CON_STATE;
 
 /* Several modules, and later several cores, write through the same cursor.
@@ -89,6 +90,7 @@ ConRelease (
 #define mCol          (CON_SHARED->Col)
 #define mLineNo       (CON_SHARED->LineNo)
 #define mPendingPrefix (CON_SHARED->Pending)
+#define mPanic        (CON_SHARED->Panic)
 
 /* Row clearing was removed: each cell paints its own background. */
 
@@ -165,6 +167,12 @@ FbPutChar (
   }
 
   if (mRow >= ROWS) {
+    /* Once a panic starts the first lines are the ones that matter, so stop
+     * drawing instead of wrapping: the panel keeps the opening of the report
+     * and nothing overwrites it. */
+    if (mPanic) {
+      return;
+    }
     /* Wrap: wipe the log area so the next screen always reads top-down and
      * cannot be confused with leftovers from an earlier boot. */
     UINT32 yy;
@@ -222,6 +230,27 @@ SerialPortWrite (
   /* Hold the lock for the whole buffer: locking per character still lets two
    * modules interleave their messages into one garbled line. */
   ConAcquire ();
+  if (!mPanic) {
+    for (i = 0; i + 5 < NumberOfBytes; i++) {
+      if (Buffer[i] == 'A' && Buffer[i + 1] == 'S' && Buffer[i + 2] == 'S' &&
+          Buffer[i + 3] == 'E' && Buffer[i + 4] == 'R' && Buffer[i + 5] == 'T') {
+        /* Start the report at the top of the panel and stop scrolling once it
+         * fills, so the opening lines of a panic survive. */
+        UINT32 yy;
+        UINT32 xx;
+        for (yy = MARGIN_Y; yy < MARGIN_Y + ROWS * CELL_H && yy < FB_HEIGHT; yy++) {
+          volatile UINT32 *ln = FB_BASE + yy * FB_STRIDE + MARGIN_X;
+          for (xx = 0; xx < COLS * CELL_W; xx++) {
+            ln[xx] = BG;
+          }
+        }
+        mRow = 0;
+        mCol = 0;
+        mPanic = 1;
+        break;
+      }
+    }
+  }
   for (i = 0; i < NumberOfBytes; i++) {
     FbPutChar ((CHAR8)Buffer[i]);
   }
