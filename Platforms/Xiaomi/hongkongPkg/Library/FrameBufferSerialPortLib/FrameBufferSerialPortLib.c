@@ -99,6 +99,18 @@ FbPutChar (
     mCol++;
   }
 
+  /* The display controller scans memory while the CPU writes through a
+   * cacheable mapping, so push the glyph out to memory before it is scanned. */
+  {
+    UINTN start = (UINTN)FB_BASE + (MARGIN_Y + mRow * CELL_H) * FB_STRIDE * 4;
+    UINTN end   = start + CELL_H * FB_STRIDE * 4;
+    UINTN p;
+    for (p = start & ~(UINTN)63; p < end; p += 64) {
+      __asm__ volatile("dc civac, %0" :: "r"(p) : "memory");
+    }
+    __asm__ volatile("dsb sy" ::: "memory");
+  }
+
   if (mRow > 60) {
     mRow = 0;
   }
