@@ -231,9 +231,13 @@ SerialPortWrite (
    * modules interleave their messages into one garbled line. */
   ConAcquire ();
   if (!mPanic) {
+    /* Freeze on the banner that opens a fault, not on the ASSERT that closes
+     * it: the register dump between them is the part worth reading. */
     for (i = 0; i + 5 < NumberOfBytes; i++) {
-      if (Buffer[i] == 'A' && Buffer[i + 1] == 'S' && Buffer[i + 2] == 'S' &&
-          Buffer[i + 3] == 'E' && Buffer[i + 4] == 'R' && Buffer[i + 5] == 'T') {
+      if ((Buffer[i] == '!' && Buffer[i + 1] == '!' &&
+           Buffer[i + 2] == '!' && Buffer[i + 3] == '!') ||
+          (Buffer[i] == 'A' && Buffer[i + 1] == 'S' && Buffer[i + 2] == 'S' &&
+           Buffer[i + 3] == 'E' && Buffer[i + 4] == 'R' && Buffer[i + 5] == 'T')) {
         /* Start the report at the top of the panel and stop scrolling once it
          * fills, so the opening lines of a panic survive. */
         UINT32 yy;
