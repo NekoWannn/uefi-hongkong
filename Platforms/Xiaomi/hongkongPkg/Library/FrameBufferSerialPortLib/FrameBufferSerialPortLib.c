@@ -198,12 +198,10 @@ SerialPortInitialize (
     return RETURN_SUCCESS;
   }
 
-  for (y = MARGIN_Y; y < MARGIN_Y + ROWS * CELL_H && y < FB_HEIGHT; y++) {
-    volatile UINT32 *line = FB_BASE + y * FB_STRIDE + MARGIN_X;
-    for (x = 0; x < COLS * CELL_W; x++) {
-      line[x] = BG;
-    }
-  }
+  /* No screen clear: a clear loop here wipes the shim's output and looks
+   * exactly like a firmware that died, which made the last runs ambiguous. */
+  (void)y;
+  (void)x;
   mRow = 0;
   mCol = 0;
   mLineNo = 1;
