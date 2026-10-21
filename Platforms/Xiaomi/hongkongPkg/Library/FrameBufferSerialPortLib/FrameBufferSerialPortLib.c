@@ -41,12 +41,49 @@ static const unsigned char font8x16[95][16] = {
 #define CON_MAGIC   0x53474F4CU   /* 'LGOS' */
 
 typedef struct {
+  UINT32 Lock;
   UINT32 Magic;
   UINT32 Row;
   UINT32 Col;
   UINT32 LineNo;
   UINT32 Pending;
 } CON_STATE;
+
+/* Several modules, and later several cores, write through the same cursor.
+ * A tiny exclusive-monitor spinlock keeps a line from being torn mid-glyph. */
+STATIC
+VOID
+ConAcquire (
+  VOID
+  )
+{
+  UINTN addr = (UINTN)&CON_SHARED->Lock;
+  __asm__ volatile (
+    "1: ldxr  w1, [%0]\n"
+    "   cbnz  w1, 1b\n"
+    "   mov   w1, #1\n"
+    "   stxr  w2, w1, [%0]\n"
+    "   cbnz  w2, 1b\n"
+    :
+    : "r"(addr)
+    : "w1", "w2", "memory"
+    );
+}
+
+STATIC
+VOID
+ConRelease (
+  VOID
+  )
+{
+  const UINT32 zero = 0;
+  __asm__ volatile (
+    "stlr  %w0, [%1]\n"
+    :
+    : "r"(zero), "r"((UINTN)&CON_SHARED->Lock)
+    : "memory"
+    );
+}
 
 #define mRow          (CON_SHARED->Row)
 #define mCol          (CON_SHARED->Col)
@@ -64,6 +101,8 @@ FbPutChar (
   UINT32 glyph;
   UINT32 y;
   UINT32 bit;
+
+  ConAcquire ();
 
   if (Ch == '\n') {
     mCol = 0;
@@ -141,6 +180,8 @@ FbPutChar (
     mRow = 0;
     mCol = 0;
   }
+
+  ConRelease ();
 }
 
 RETURN_STATUS
