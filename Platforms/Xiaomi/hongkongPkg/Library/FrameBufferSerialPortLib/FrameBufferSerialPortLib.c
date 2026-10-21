@@ -94,7 +94,18 @@ FbPutChar (
   }
 
   if (mRow >= ROWS) {
+    /* Wrap: wipe the log area so the next screen always reads top-down and
+     * cannot be confused with leftovers from an earlier boot. */
+    UINT32 yy;
+    UINT32 xx;
+    for (yy = MARGIN_Y; yy < MARGIN_Y + ROWS * CELL_H && yy < FB_HEIGHT; yy++) {
+      volatile UINT32 *ln = FB_BASE + yy * FB_STRIDE + MARGIN_X;
+      for (xx = 0; xx < COLS * CELL_W; xx++) {
+        ln[xx] = BG;
+      }
+    }
     mRow = 0;
+    mCol = 0;
   }
 }
 
