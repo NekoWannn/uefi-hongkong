@@ -47,6 +47,7 @@ typedef struct {
   UINT32 Col;
   UINT32 LineNo;
   UINT32 Pending;
+  UINT32 Beat;
 } CON_STATE;
 
 /* Several modules, and later several cores, write through the same cursor.
@@ -89,6 +90,7 @@ ConRelease (
 #define mCol          (CON_SHARED->Col)
 #define mLineNo       (CON_SHARED->LineNo)
 #define mPendingPrefix (CON_SHARED->Pending)
+#define mBeat         (CON_SHARED->Beat)
 
 /* Row clearing was removed: each cell paints its own background. */
 
@@ -224,6 +226,14 @@ SerialPortWrite (
   ConAcquire ();
   for (i = 0; i < NumberOfBytes; i++) {
     FbPutChar ((CHAR8)Buffer[i]);
+  }
+  /* Heartbeat far below the log: a console clear wipes the text area, but this
+   * pixel survives it and keeps counting writes, so we can tell a hung
+   * firmware from one that is merely printing somewhere else. */
+  {
+    volatile UINT32 *beat = FB_BASE + 2000U * FB_STRIDE + 40U + (mBeat++ % 900U);
+    *beat = 0x00FFFFFFU;
+    __asm__ volatile("dc civac, %0" :: "r"(beat) : "memory");
   }
   ConRelease ();
   return NumberOfBytes;
