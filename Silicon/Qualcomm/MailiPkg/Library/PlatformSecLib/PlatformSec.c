@@ -4,14 +4,14 @@
 **/
 
 #include <Library/PlatformSecLib.h>
-#include <Library/ArmSmmuDetachLib.h>
 
 VOID
 PlatformInitialize ()
 {
-  // Set MDP SIDs
-  CONST UINT16 MdpStreams[] = { 0x800, 0x801, 0x804, 0x81C, 0x19A1, 0x19A2, 0x19A3, 0x19A4, 0x19A5, 0x19AB, 0x2801, 0x2C01 };
-
-  // Detach IOMMU Domains
-  ArmSmmuDetach (MdpStreams, ARRAY_SIZE (MdpStreams));
+  //
+  // The inherited implementation detached a list of MDP stream IDs from the
+  // SMMU. That list came from SM8850; this device's DTB describes a different
+  // set on its display node, so the correct IDs are still unknown. Doing
+  // nothing here tells us whether the detach was what stopped SEC.
+  //
 }
